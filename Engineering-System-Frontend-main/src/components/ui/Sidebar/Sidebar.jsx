@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
+import { TbReportMoney } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -80,15 +81,13 @@ const menu = [
         id: "oqood-mohamat-almodir",
         label: "مهام المدير",
         isDropdown: false,
-        children: [
-        ],
+        children: [],
       },
       {
         id: "oqood-mohamat-almowazaf",
         label: "مهام الموظف",
         isDropdown: false,
-        children: [
-        ],
+        children: [],
       },
       {
         id: "oqood-safhat-al3amal",
@@ -119,6 +118,43 @@ const menu = [
             id: "oqood-mawqif-mali",
             label: "تسجيل الموقف المالي للمشروعات",
             path: "/oqood/tasjil-almawqif-almali",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-mizaniya",
+    label: "مكتب الميزانية",
+    icon: <TbReportMoney className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "mizaniya-mohamat-almodir",
+        label: "مهام المدير",
+        isDropdown: false,
+        children: [],
+      },
+      {
+        id: "mizaniya-mohamat-almowazaf",
+        label: "مهام الموظف",
+        isDropdown: false,
+        children: [],
+      },
+      {
+        id: "mizaniya-safhat-al3amal",
+        label: "صفحات العمل",
+        isDropdown: false,
+        children: [
+          {
+            id: "mizaniya-tasjil-makhsamat",
+            label: "تسجيل المخصمات المالية",
+            path: "/mizaniya/tasjil-almakhsamat",
+          },
+          {
+            id: "mizaniya-byan-ta3aqud",
+            label: "تسجيل بيان التعاقد والموازنة والصرف",
+            path: "/mizaniya/byan-alta3aqud",
           },
         ],
       },
