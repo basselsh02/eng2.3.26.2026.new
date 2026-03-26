@@ -1,0 +1,76 @@
+@media print {
+  /* Hide everything except the active tab's table */
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide pagination, filters, buttons inside print area */
+  .print-area [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Table styling for print */
+  .print-area table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+    direction: rtl;
+  }
+
+  .print-area thead tr:first-child th {
+    background-color: #1e40af !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 6px 8px;
+    font-weight: bold;
+    border: 1px solid #1e3a8a;
+  }
+
+  /* Hide filter row in print */
+  .print-area thead tr:nth-child(2) {
+    display: none;
+  }
+
+  .print-area tbody tr:nth-child(even) td {
+    background-color: #eff6ff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-area td {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+  }
+
+  .print-page-title {
+    display: block;
+    margin: 0 0 12px;
+    font-size: 16pt;
+    font-weight: 700;
+    color: #111827;
+    text-align: right;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+}
+
+.print-page-title {
+  display: none;
+}
