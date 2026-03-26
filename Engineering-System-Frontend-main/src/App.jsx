@@ -26,7 +26,7 @@ import ByanAlTa3aqud from "./components/pages/Mizaniya/ByanAlTa3aqud";
 
 // مكتب المشتريات pages
 import ByanatAlmashro3at from "./components/pages/Mashtarawat/ByanatAlmashro3at";
-import MahdarEjra2at from "./components/pages/Mashtarawat/MahdarEjra2at";
+import MahdarEjra2at, { MahdarEjra2atMali } from "./components/pages/Mashtarawat/MahdarEjra2at";
 import MohamatAlModirMashtarawat from "./components/pages/Mashtarawat/MohamatAlModirMashtarawat";
 import MohamatAlMowazafMashtarawat from "./components/pages/Mashtarawat/MohamatAlMowazafMashtarawat";
 
@@ -76,6 +76,7 @@ const router = createBrowserRouter([
       // مكتب المشتريات - صفحات العمل
       { path: "mashtarawat/byanat-almashro3at", element: <ByanatAlmashro3at /> },
       { path: "mashtarawat/mahdar-ejra2at", element: <MahdarEjra2at /> },
+      { path: "mashtarawat/mahdar-ejra2at-mali", element: <MahdarEjra2atMali /> },
     ],
   },
 ]);
