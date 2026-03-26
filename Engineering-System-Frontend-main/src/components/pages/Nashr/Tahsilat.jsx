@@ -19,14 +19,14 @@ export default function Tahsilat() {
     <div className="p-4 space-y-4" dir="rtl">
       {/* Header Info */}
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">TRDD_UF</span>
           <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">20252028</span>
         </div>
         <div className="flex-1 flex justify-center">
           <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">التحصيلات</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">قسم العقود</button>
           <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">اجراثات التعاقد /قسم العقود</button>
         </div>
