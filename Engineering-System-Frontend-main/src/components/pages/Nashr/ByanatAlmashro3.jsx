@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
+import Input from "../../ui/Input/Input";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
 
@@ -29,193 +30,189 @@ const shorotData = [
   { id: 5, kod: "44", ismNaw3Shart: "تم التعاقد بالمناقصة المحدودة", mosalsal: "92", wasf: "على الشركات المرشحة ذات الخبرة والسمعة الطيبة والمصداق عليها من جواز", tartib: "6", qima: "" },
 ];
 
+function applyFilters(rows, filters) {
+  return rows.filter((row) => Object.entries(filters).every(([key, value]) => !value || String(row[key] || "").includes(value)));
+}
+
+function TableFilterCell({ value, onChange, placeholder }) {
+  return (
+    <div className="min-w-28">
+      <Input label={placeholder} value={value} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
 function MashroSection() {
   return (
     <div className="space-y-3" dir="rtl">
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">كود المشروع</label>
-          <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">كود نوع المشروع</label>
-          <input defaultValue="اعمال المباني" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">العام المالي</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm">
-            <option>2025/2024</option>
-          </select>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+        <Input label="كود المشروع" defaultValue="4585551456" />
+        <Input label="كود نوع المشروع" defaultValue="اعمال المباني" />
+        <Input label="العام المالي" type="select" options={[{ value: "2025/2024", label: "2025/2024" }]} />
+        <Input label="تاريخ ورود الكارت" type="select" options={[{ value: "4585551456", label: "4585551456" }]} />
       </div>
-      <div className="flex items-center gap-2 text-sm">
-        <label className="font-medium w-40 shrink-0 text-right">اسم المشروع</label>
-        <input defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 مدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
+
+      <Input label="اسم المشروع" defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 مدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي" />
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+        <Input label="تاريخ الاصدار" type="select" options={[{ value: "2020/2/8", label: "2020/2/8" }]} />
+        <Input label="اسلوب النشر والتعاقد" type="select" options={[{ value: "4585551456", label: "4585551456" }]} />
+        <Input label="تاريخ البداية الفعلي" type="select" options={[{ value: "2020/2/15", label: "2020/2/15" }]} />
+        <Input label="تاريخ النهاية الفعلي" type="select" options={[{ value: "2025/8/10", label: "2025/8/10" }]} />
       </div>
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">تاريخ ورود الكارت</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>4585551456</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">تاريخ الاصدار</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>2020/2/8</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">اسلوب النشر والتعاقد</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>4585551456</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">تاريخ البداية الفعلي</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>2020/2/15</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">تاريخ النهاية الفعلي</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>2025/8/10</option></select>
-        </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+        <Input label="الجهة الطالبة" defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" />
+        <Button size="sm" variant="primary" className="h-[48px]">تسجيل جهة جديدة</Button>
+        <Input label="التكلفة التقديرية" defaultValue="125.252.500" />
+        <Input label="نسبة العلاوة" defaultValue="0.25" />
       </div>
-      <div className="flex items-center gap-2 text-sm">
-        <label className="font-medium w-40 shrink-0 text-right">الجهة الطالبة</label>
-        <input defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        <Button size="sm" variant="primary">تسجيل جهة جديدة</Button>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+        <Input label="رقم مذكرة الفرع المالي" defaultValue="500" />
+        <Input label="الفرع المسؤل" defaultValue="فرع الصيانة" />
+        <Input label="الشركة" defaultValue="شاكر للمقاولات العامة والموردات" />
+        <Input label="تاريخ النشر" type="select" options={[{ value: "2025/5/20", label: "2025/5/20" }]} />
       </div>
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">التكلفة التقديرية</label>
-          <input defaultValue="125.252.500" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">نسبة العلاوة</label>
-          <input defaultValue="0.25" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">رقم مذكرة الفرع المالي</label>
-          <input defaultValue="500" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">الفرع المسؤل</label>
-          <input defaultValue="فرع الصيانة" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">الشركة</label>
-          <input defaultValue="شاكر للمقاولات العامة والموردات" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">تاريخ النشر</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>2025/5/20</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">الموظف المسؤل</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>الاستاذة/مي</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">تاريخ الفتح الفعلي</label>
-          <select className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm"><option>2025/10/2</option></select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-right font-medium w-40 shrink-0">المشروع الرئيسي</label>
-          <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-3 py-2 bg-background text-sm" />
-        </div>
-      </div>
-      <div>
-        <Button size="sm" variant="primary">طباعة تقرير اللجان</Button>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+        <Input label="الموظف المسؤل" type="select" options={[{ value: "الاستاذة/مي", label: "الاستاذة/مي" }]} />
+        <Input label="تاريخ الفتح الفعلي" type="select" options={[{ value: "2025/10/2", label: "2025/10/2" }]} />
+        <Input label="المشروع الرئيسي" defaultValue="4585551456" />
+        <Button size="sm" variant="primary" className="h-[48px]">طباعة تقرير اللجان</Button>
       </div>
     </div>
   );
 }
 
 function ShorotSection() {
+  const [filters, setFilters] = useState({ kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", qima: "", tartib: "" });
+  const filtered = useMemo(() => applyFilters(shorotData, filters), [filters]);
+
   return (
     <div className="space-y-3" dir="rtl">
-      <div className="flex items-center gap-2 flex-wrap">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">كود المشروع</label>
-          <input defaultValue="4585551456" className="border border-gray-300 rounded px-2 py-1 text-sm bg-background w-32" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">اسم المشروع</label>
-          <input defaultValue="صيانة وتشغيل شبكة الكهرباء والمولدات..." className="border border-gray-300 rounded px-2 py-1 text-sm bg-background flex-1 min-w-60" />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="md:col-span-1"><Input label="كود المشروع" defaultValue="4585551456" /></div>
+        <div className="md:col-span-3"><Input label="اسم المشروع" defaultValue="صيانة وتشغيل شبكة الكهرباء والمولدات..." /></div>
       </div>
-      <div className="flex gap-2 flex-wrap">
-        <Button size="sm" variant="primary">تسجيل شروط النشر</Button>
-        <Button size="sm" variant="primary">تحميل شروط المذكرة</Button>
-        <Button size="sm" variant="primary">طباعة العقد</Button>
-        <Button size="sm" variant="primary">طباعة العقد مبدأئي/بدون</Button>
-      </div>
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-3 font-semibold border-l border-gray-200">كود نوع الشرط</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم نوع الشرط</th>
-              <th className="p-3 font-semibold border-l border-gray-200">مسلسل/ الكود</th>
-              <th className="p-3 font-semibold border-l border-gray-200">وصف الشرط</th>
-              <th className="p-3 font-semibold border-l border-gray-200">القيمة</th>
-              <th className="p-3 font-semibold">ترتيب الشروط</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shorotData.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-3 border-l border-gray-100">{row.kod}</td>
-                <td className="p-3 border-l border-gray-100">{row.ismNaw3Shart}</td>
-                <td className="p-3 border-l border-gray-100">{row.mosalsal}</td>
-                <td className="p-3 border-l border-gray-100 max-w-xs text-xs">{row.wasf}</td>
-                <td className="p-3 border-l border-gray-100">{row.qima}</td>
-                <td className="p-3">{row.tartib}</td>
+
+      <div className="flex flex-col lg:flex-row gap-3">
+        <div className="order-2 lg:order-1 flex-1 overflow-x-auto border border-gray-200 rounded bg-base">
+          <table className="w-full text-sm text-right">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="p-3 font-semibold border-l border-gray-200">كود نوع الشرط</th>
+                <th className="p-3 font-semibold border-l border-gray-200">اسم نوع الشرط</th>
+                <th className="p-3 font-semibold border-l border-gray-200">مسلسل/ الكود</th>
+                <th className="p-3 font-semibold border-l border-gray-200">وصف الشرط</th>
+                <th className="p-3 font-semibold border-l border-gray-200">القيمة</th>
+                <th className="p-3 font-semibold">ترتيب الشروط</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              <tr className="border-b border-gray-200 bg-base align-top">
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kod} onChange={(v) => setFilters((p) => ({ ...p, kod: v }))} placeholder="فلتر كود نوع الشرط" /></th>
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ismNaw3Shart} onChange={(v) => setFilters((p) => ({ ...p, ismNaw3Shart: v }))} placeholder="فلتر اسم النوع" /></th>
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.mosalsal} onChange={(v) => setFilters((p) => ({ ...p, mosalsal: v }))} placeholder="فلتر المسلسل" /></th>
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.wasf} onChange={(v) => setFilters((p) => ({ ...p, wasf: v }))} placeholder="فلتر الوصف" /></th>
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.qima} onChange={(v) => setFilters((p) => ({ ...p, qima: v }))} placeholder="فلتر القيمة" /></th>
+                <th className="p-2"><TableFilterCell value={filters.tartib} onChange={(v) => setFilters((p) => ({ ...p, tartib: v }))} placeholder="فلتر الترتيب" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
+                  <td className="p-3 border-l border-gray-100">{row.kod}</td>
+                  <td className="p-3 border-l border-gray-100">{row.ismNaw3Shart}</td>
+                  <td className="p-3 border-l border-gray-100">{row.mosalsal}</td>
+                  <td className="p-3 border-l border-gray-100 max-w-xs text-xs">{row.wasf}</td>
+                  <td className="p-3 border-l border-gray-100">{row.qima}</td>
+                  <td className="p-3">{row.tartib}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="order-1 lg:order-2 flex lg:flex-col gap-2 lg:w-52 self-start">
+          <Button size="sm" variant="primary">تسجيل شروط النشر</Button>
+          <Button size="sm" variant="primary">تحميل شروط المذكرة</Button>
+          <Button size="sm" variant="primary">طباعة العقد</Button>
+          <Button size="sm" variant="primary">طباعة العقد مبدأئي/بدون</Button>
+        </div>
       </div>
     </div>
   );
 }
 
 function TarshihSection() {
+  const [selectedCompanyId, setSelectedCompanyId] = useState(null);
+  const [filtersLeft, setFiltersLeft] = useState({ sharika: "" });
+  const [filtersRight, setFiltersRight] = useState({ sharika: "", raqmSijl: "", raqmMwafaqa: "" });
+
+  const leftRows = useMemo(() => applyFilters(companiesData, filtersLeft), [filtersLeft]);
+  const rightRows = useMemo(() => applyFilters(companiesData, filtersRight), [filtersRight]);
+
   return (
     <div className="space-y-3" dir="rtl">
-      <div className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">الشركة</label>
-          <input defaultValue="المقاولون العرب" className="border border-gray-300 rounded px-2 py-1 text-sm bg-background" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">السجل</label>
-          <input defaultValue="25555" className="border border-gray-300 rounded px-2 py-1 text-sm bg-background w-24" />
-        </div>
-        <div className="flex gap-2">
-          <Button size="sm" variant="primary">بحث</Button>
-          <Button size="sm" variant="danger">حذف</Button>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+        <Input label="الشركة" defaultValue="المقاولون العرب" />
+        <Input label="السجل" defaultValue="25555" />
+        <Button size="sm" variant="primary" className="h-[48px]">بحث</Button>
+        <Button size="sm" variant="danger" className="h-[48px]">حذف</Button>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="border border-gray-200 rounded bg-base overflow-hidden">
-          <div className="bg-gray-50 p-2 text-center font-semibold text-sm border-b border-gray-200">اسم الشركات المرشحة</div>
-          <div className="divide-y divide-gray-100">
-            {companiesData.map((c) => (
-              <div key={c.id} className="p-2 text-sm hover:bg-primary-50 cursor-pointer">{c.sharika.includes("المقاولون") ? "شركة " + c.sharika : c.sharika}</div>
-            ))}
-          </div>
+          <table className="w-full text-sm text-right">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="p-3 font-semibold">اسم الشركات المرشحة</th>
+              </tr>
+              <tr className="bg-base border-b border-gray-200">
+                <th className="p-2"><TableFilterCell value={filtersLeft.sharika} onChange={(v) => setFiltersLeft({ sharika: v })} placeholder="فلتر الشركة" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {leftRows.map((c, idx) => (
+                <tr
+                  key={c.id}
+                  onClick={() => setSelectedCompanyId(c.id)}
+                  className={`cursor-pointer border-b border-gray-100 ${selectedCompanyId === c.id ? "bg-primary-100" : idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}
+                >
+                  <td className="p-3">{c.sharika.includes("المقاولون") ? `شركة ${c.sharika}` : c.sharika}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+
         <div className="border border-gray-200 rounded bg-base overflow-hidden">
-          <div className="bg-gray-50 p-2 text-sm border-b border-gray-200">
-            <div className="grid grid-cols-3 gap-2 font-semibold text-center">
-              <span>الشركات</span>
-              <span>رقم السجل</span>
-              <span>رقم الموافقة</span>
-            </div>
-          </div>
-          <div className="divide-y divide-gray-100">
-            {companiesData.map((c) => (
-              <div key={c.id} className="p-2 text-sm hover:bg-primary-50 grid grid-cols-3 gap-2 text-center">
-                <span>{c.sharika}</span>
-                <span>{c.raqmSijl}</span>
-                <span>{c.raqmMwafaqa}</span>
-              </div>
-            ))}
-          </div>
+          <table className="w-full text-sm text-right">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="p-3 font-semibold border-l border-gray-200">الشركات</th>
+                <th className="p-3 font-semibold border-l border-gray-200">رقم السجل</th>
+                <th className="p-3 font-semibold">رقم الموافقة</th>
+              </tr>
+              <tr className="border-b border-gray-200 bg-base align-top">
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filtersRight.sharika} onChange={(v) => setFiltersRight((p) => ({ ...p, sharika: v }))} placeholder="فلتر الشركات" /></th>
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filtersRight.raqmSijl} onChange={(v) => setFiltersRight((p) => ({ ...p, raqmSijl: v }))} placeholder="فلتر رقم السجل" /></th>
+                <th className="p-2"><TableFilterCell value={filtersRight.raqmMwafaqa} onChange={(v) => setFiltersRight((p) => ({ ...p, raqmMwafaqa: v }))} placeholder="فلتر رقم الموافقة" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {rightRows.map((c, idx) => (
+                <tr
+                  key={c.id}
+                  onClick={() => setSelectedCompanyId(c.id)}
+                  className={`p-2 cursor-pointer border-b border-gray-100 ${selectedCompanyId === c.id ? "bg-primary-100" : idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}
+                >
+                  <td className="p-3 border-l border-gray-100">{c.sharika}</td>
+                  <td className="p-3 border-l border-gray-100">{c.raqmSijl}</td>
+                  <td className="p-3">{c.raqmMwafaqa}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -223,6 +220,9 @@ function TarshihSection() {
 }
 
 function BunodSection() {
+  const [filters, setFilters] = useState({ mosalsal: "", wasf: "", kod: "", wahda: "", kamiya: "", qima: "", ijmali: "" });
+  const filtered = useMemo(() => applyFilters(bunodData, filters), [filters]);
+
   return (
     <div className="space-y-3" dir="rtl">
       <div className="overflow-x-auto border border-gray-200 rounded bg-base">
@@ -237,9 +237,18 @@ function BunodSection() {
               <th className="p-3 font-semibold border-l border-gray-200">القيمة</th>
               <th className="p-3 font-semibold">الاجمالي</th>
             </tr>
+            <tr className="border-b border-gray-200 bg-base align-top">
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.mosalsal} onChange={(v) => setFilters((p) => ({ ...p, mosalsal: v }))} placeholder="فلتر المسلسل" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.wasf} onChange={(v) => setFilters((p) => ({ ...p, wasf: v }))} placeholder="فلتر الوصف" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kod} onChange={(v) => setFilters((p) => ({ ...p, kod: v }))} placeholder="فلتر الكود" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.wahda} onChange={(v) => setFilters((p) => ({ ...p, wahda: v }))} placeholder="فلتر الوحدة" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kamiya} onChange={(v) => setFilters((p) => ({ ...p, kamiya: v }))} placeholder="فلتر الكمية" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.qima} onChange={(v) => setFilters((p) => ({ ...p, qima: v }))} placeholder="فلتر القيمة" /></th>
+              <th className="p-2"><TableFilterCell value={filters.ijmali} onChange={(v) => setFilters((p) => ({ ...p, ijmali: v }))} placeholder="فلتر الاجمالي" /></th>
+            </tr>
           </thead>
           <tbody>
-            {bunodData.map((row, idx) => (
+            {filtered.map((row, idx) => (
               <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
                 <td className="p-3 border-l border-gray-100">{row.mosalsal}</td>
                 <td className="p-3 border-l border-gray-100">{row.wasf}</td>
@@ -265,6 +274,7 @@ export default function ByanatAlmashro3() {
   const [activeTab, setActiveTab] = useState("المشروع");
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
+  const [searchVal, setSearchVal] = useState("");
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -278,7 +288,6 @@ export default function ByanatAlmashro3() {
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex flex-col gap-2">
           <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">TRDD_UF</span>
@@ -293,36 +302,12 @@ export default function ByanatAlmashro3() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4 flex-wrap border border-gray-200 rounded p-3 bg-base">
-        <div className="flex items-center gap-2 mr-auto">
-          <label className="text-sm font-medium">العام المالي</label>
-          <select className="border border-gray-300 rounded px-2 py-1 text-sm bg-background">
-            <option>{amMali}</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">كود المشروع</label>
-          <input value={kodMashro3} readOnly className="border border-gray-300 rounded px-2 py-1 text-sm bg-background w-32" />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
+        <Input label="كود المشروع" value={kodMashro3} readOnly />
+        <Input label="العام المالي" type="select" options={[{ value: amMali, label: amMali }]} />
+        <Input label="البحث" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
       </div>
 
-      {/* Search */}
-      <div className="flex items-center gap-2 border border-gray-200 rounded p-2 bg-base">
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-        <input placeholder="البحث" className="flex-1 bg-transparent outline-none text-sm" />
-      </div>
-
-      {/* Tabs */}
       <div className="flex gap-4 border-b border-gray-200 pb-1">
         {tabs.map((tab) => (
           <button
@@ -339,7 +324,6 @@ export default function ByanatAlmashro3() {
         ))}
       </div>
 
-      {/* Tab Content */}
       <div className="bg-base rounded border border-gray-100 p-4">
         {renderTabContent()}
       </div>
