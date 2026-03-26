@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../ui/Button/Button";
+import Input from "../../ui/Input/Input";
 
 const tabs = ["بيانات المشروع", "بيانات التعاقد", "بيانات الصرف", "صرف خامات"];
 
@@ -310,6 +311,8 @@ function SarfKhamaatSection() {
 export default function ByanAlTa3aqud() {
   const [activeTab, setActiveTab] = useState("بيانات المشروع");
   const [searchVal, setSearchVal] = useState("");
+  const [kodMashro3] = useState("4585551456");
+  const [amMali] = useState("2026/2025");
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -366,33 +369,19 @@ export default function ByanAlTa3aqud() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="flex items-center gap-2 border border-gray-200 rounded p-2 bg-base">
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-        <input
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          placeholder="البحث"
-          className="flex-1 bg-transparent outline-none text-sm"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
+        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
+        <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
+        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-gray-200 pb-1 overflow-x-auto">
+      <div className="flex gap-4 border-b border-gray-200 pb-1">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-sm font-medium transition-colors ${
               activeTab === tab
                 ? "text-primary-600 border-b-2 border-primary-600 -mb-1 font-bold"
                 : "text-gray-500 hover:text-primary-500"
