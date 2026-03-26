@@ -7,6 +7,7 @@ const Input = forwardRef(
       type = "text",
       id,
       error,
+      showLabel = true,
       options = [],
       rules = {},
       ...props
@@ -44,9 +45,10 @@ const Input = forwardRef(
                   </option>
                 ))}
               </select>
-              <label
-                htmlFor={inputId}
-                className={`absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-background px-2
+              {showLabel && (
+                <label
+                  htmlFor={inputId}
+                  className={`absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-background px-2
                 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2
                 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-2
                 ${
@@ -54,10 +56,11 @@ const Input = forwardRef(
                     ? "text-red-500"
                     : "text-body peer-focus:text-primary-500"
                 }`}
-              >
-                {label}
-                {isRequired && <span className="text-red-500">*</span>}
-              </label>
+                >
+                  {label}
+                  {isRequired && <span className="text-red-500">*</span>}
+                </label>
+              )}
             </div>
           </div>
         </>
@@ -80,21 +83,23 @@ const Input = forwardRef(
                 : "focus:border-primary-500"
             }
           `}
-              placeholder=" "
+              placeholder={showLabel ? " " : label}
               {...props}
             />
 
-            <label
-              htmlFor={inputId}
-              className={`absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-background px-2
+            {showLabel && (
+              <label
+                htmlFor={inputId}
+                className={`absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-left bg-background px-2
             peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2
             peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-2
             ${error ? "text-red-500" : "text-body peer-focus:text-primary-500"}
           `}
-            >
-              {label}
-              {isRequired && <span className="text-red-500">*</span>}
-            </label>
+              >
+                {label}
+                {isRequired && <span className="text-red-500">*</span>}
+              </label>
+            )}
           </div>
           {/* Error message inside component */}
           {error && (
