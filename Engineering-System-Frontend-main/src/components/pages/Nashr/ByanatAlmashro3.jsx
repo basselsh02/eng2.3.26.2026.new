@@ -46,39 +46,39 @@ function MashroSection() {
   return (
     <div className="space-y-3" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="كود المشروع" defaultValue="4585551456" />
-        <Input label="كود نوع المشروع" defaultValue="اعمال المباني" />
-        <Input label="العام المالي" type="select" options={[{ value: "2025/2024", label: "2025/2024" }]} />
-        <Input label="تاريخ ورود الكارت" type="select" options={[{ value: "4585551456", label: "4585551456" }]} />
+        <Input label="كود المشروع" showLabel={false} defaultValue="4585551456" />
+        <Input label="كود نوع المشروع" showLabel={false} defaultValue="اعمال المباني" />
+        <Input label="العام المالي" type="select" showLabel={false} options={[{ value: "2025/2024", label: "2025/2024" }]} />
+        <Input label="تاريخ ورود الكارت" type="select" showLabel={false} options={[{ value: "4585551456", label: "4585551456" }]} />
       </div>
 
-      <Input label="اسم المشروع" defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 مدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي" />
+      <Input label="اسم المشروع" showLabel={false} defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 مدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي" />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="تاريخ الاصدار" type="select" options={[{ value: "2020/2/8", label: "2020/2/8" }]} />
-        <Input label="اسلوب النشر والتعاقد" type="select" options={[{ value: "4585551456", label: "4585551456" }]} />
-        <Input label="تاريخ البداية الفعلي" type="select" options={[{ value: "2020/2/15", label: "2020/2/15" }]} />
-        <Input label="تاريخ النهاية الفعلي" type="select" options={[{ value: "2025/8/10", label: "2025/8/10" }]} />
+        <Input label="تاريخ الاصدار" type="select" showLabel={false} options={[{ value: "2020/2/8", label: "2020/2/8" }]} />
+        <Input label="اسلوب النشر والتعاقد" type="select" showLabel={false} options={[{ value: "4585551456", label: "4585551456" }]} />
+        <Input label="تاريخ البداية الفعلي" type="select" showLabel={false} options={[{ value: "2020/2/15", label: "2020/2/15" }]} />
+        <Input label="تاريخ النهاية الفعلي" type="select" showLabel={false} options={[{ value: "2025/8/10", label: "2025/8/10" }]} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="الجهة الطالبة" defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" />
+        <Input label="الجهة الطالبة" showLabel={false} defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" />
         <Button size="sm" variant="primary" className="h-[48px]">تسجيل جهة جديدة</Button>
-        <Input label="التكلفة التقديرية" defaultValue="125.252.500" />
-        <Input label="نسبة العلاوة" defaultValue="0.25" />
+        <Input label="التكلفة التقديرية" showLabel={false} defaultValue="125.252.500" />
+        <Input label="نسبة العلاوة" showLabel={false} defaultValue="0.25" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="رقم مذكرة الفرع المالي" defaultValue="500" />
-        <Input label="الفرع المسؤل" defaultValue="فرع الصيانة" />
-        <Input label="الشركة" defaultValue="شاكر للمقاولات العامة والموردات" />
-        <Input label="تاريخ النشر" type="select" options={[{ value: "2025/5/20", label: "2025/5/20" }]} />
+        <Input label="رقم مذكرة الفرع المالي" showLabel={false} defaultValue="500" />
+        <Input label="الفرع المسؤل" showLabel={false} defaultValue="فرع الصيانة" />
+        <Input label="الشركة" showLabel={false} defaultValue="شاكر للمقاولات العامة والموردات" />
+        <Input label="تاريخ النشر" type="select" showLabel={false} options={[{ value: "2025/5/20", label: "2025/5/20" }]} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="الموظف المسؤل" type="select" options={[{ value: "الاستاذة/مي", label: "الاستاذة/مي" }]} />
-        <Input label="تاريخ الفتح الفعلي" type="select" options={[{ value: "2025/10/2", label: "2025/10/2" }]} />
-        <Input label="المشروع الرئيسي" defaultValue="4585551456" />
+        <Input label="الموظف المسؤل" type="select" showLabel={false} options={[{ value: "الاستاذة/مي", label: "الاستاذة/مي" }]} />
+        <Input label="تاريخ الفتح الفعلي" type="select" showLabel={false} options={[{ value: "2025/10/2", label: "2025/10/2" }]} />
+        <Input label="المشروع الرئيسي" showLabel={false} defaultValue="4585551456" />
         <Button size="sm" variant="primary" className="h-[48px]">طباعة تقرير اللجان</Button>
       </div>
     </div>
@@ -91,9 +91,9 @@ function ShorotSection() {
 
   return (
     <div className="space-y-3" dir="rtl">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <div className="md:col-span-1"><Input label="كود المشروع" defaultValue="4585551456" /></div>
-        <div className="md:col-span-3"><Input label="اسم المشروع" defaultValue="صيانة وتشغيل شبكة الكهرباء والمولدات..." /></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div><Input label="كود المشروع" showLabel={false} defaultValue="4585551456" /></div>
+        <div><Input label="اسم المشروع" showLabel={false} defaultValue="صيانة وتشغيل شبكة الكهرباء والمولدات..." /></div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-3">
@@ -154,8 +154,10 @@ function TarshihSection() {
   return (
     <div className="space-y-3" dir="rtl">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
-        <Input label="الشركة" defaultValue="المقاولون العرب" />
-        <Input label="السجل" defaultValue="25555" />
+        <Input label="الشركة" showLabel={false} defaultValue="الشركة" />
+        <Input label="المقاولون العرب" showLabel={false} defaultValue="المقاولون العرب" />
+        <Input label="السجل" showLabel={false} defaultValue="السجل" />
+        <Input label="25555" showLabel={false} defaultValue="25555" />
         <Button size="sm" variant="primary" className="h-[48px]">بحث</Button>
         <Button size="sm" variant="danger" className="h-[48px]">حذف</Button>
       </div>
@@ -302,10 +304,10 @@ export default function ByanatAlmashro3() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" value={kodMashro3} readOnly />
-        <Input label="العام المالي" type="select" options={[{ value: amMali, label: amMali }]} />
-        <Input label="البحث" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
+      <div className="grid grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
+        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
+        <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
+        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
       </div>
 
       <div className="flex gap-4 border-b border-gray-200 pb-1">

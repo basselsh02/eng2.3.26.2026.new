@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../ui/Button/Button";
+import Input from "../../ui/Input/Input";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "أصنف المشروع", "طباعة المذكرات"];
 
@@ -261,6 +262,7 @@ export default function IstkmalByanat() {
   const [activeTab, setActiveTab] = useState("المشروع");
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
+  const [searchVal, setSearchVal] = useState("");
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -290,33 +292,10 @@ export default function IstkmalByanat() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4 flex-wrap border border-gray-200 rounded p-3 bg-base">
-        <div className="flex items-center gap-2 mr-auto">
-          <label className="text-sm font-medium">العام المالي</label>
-          <select className="border border-gray-300 rounded px-2 py-1 text-sm bg-background">
-            <option>{amMali}</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">كود المشروع</label>
-          <input value={kodMashro3} readOnly className="border border-gray-300 rounded px-2 py-1 text-sm bg-background w-32" />
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="flex items-center gap-2 border border-gray-200 rounded p-2 bg-base">
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-        <input placeholder="البحث" className="flex-1 bg-transparent outline-none text-sm" />
+      <div className="grid grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
+        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
+        <Input label="العام المالي" showLabel={false} type="select" options={[{ value: amMali, label: amMali }]} />
+        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
       </div>
 
       {/* Tabs */}
