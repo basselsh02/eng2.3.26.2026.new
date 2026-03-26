@@ -15,6 +15,7 @@ import IdafaShorot from "./components/pages/Nashr/IdafaShorot";
 
 // مكتب العقود pages
 import Ejra2at from "./components/pages/Oqood/Ejra2at";
+import Ejra2atMaliya from "./components/pages/Oqood/Ejra2atMaliya";
 import TasjilAlMawqifAlMali from "./components/pages/Oqood/TasjilAlMawqifAlMali";
 import ByanatAlmashro3Oqood from "./components/pages/Oqood/ByanatAlmashro3Oqood";
 import TasjilByanAlMashro3 from "./components/pages/Oqood/TasjilByanAlMashro3";
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
 
       // مكتب العقود - مهام المدير
       { path: "oqood/ejra2at", element: <Ejra2at /> },
+      { path: "oqood/ejra2at-maliya", element: <Ejra2atMaliya /> },
       { path: "oqood/tasjil-almawqif-almali", element: <TasjilAlMawqifAlMali /> },
 
       // مكتب العقود - مهام الموظف / صفحات العمل
