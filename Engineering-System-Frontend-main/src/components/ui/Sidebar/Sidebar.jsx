@@ -206,6 +206,11 @@ const menu = [
             label: "محضر اجراءات الفتح والبت الفني",
             path: "/mashtarawat/mahdar-ejra2at",
           },
+          {
+            id: "mashtarawat-mahdar-ejra2at-mali",
+            label: "محضر اجراءات الفتح والبت المالي",
+            path: "/mashtarawat/mahdar-ejra2at-mali",
+          },
         ],
       },
     ],

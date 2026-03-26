@@ -781,28 +781,21 @@ function MolahazatNamozhag19() {
   );
 }
 
-// ────────────────────────────────────────────────
-// Main Component
-// ────────────────────────────────────────────────
-export default function MahdarEjra2at() {
+function MahdarEjra2atPage({ isFinancial = false }) {
   const [activeTab, setActiveTab] = useState("عروض الشركات");
   const [searchVal, setSearchVal] = useState("");
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
-  const [naw3Lajna, setNaw3Lajna] = useState("لجنة فتح المطاريف الفنية");
+  const [naw3Lajna, setNaw3Lajna] = useState(
+    isFinancial ? "لجنة فتح المطاريف المالية" : "لجنة فتح المطاريف الفنية"
+  );
   const [tarikhFrom, setTarikhFrom] = useState("2025/8/5");
   const [byanLajna, setByanLajna] = useState("");
   const [sabt, setSabt] = useState("");
 
-  const tabs = [
-    "عروض الشركات",
-    "اجراءات الفتح الفني",
-    "اجراءات الفتح المالي",
-    "اجراءات البت الفني",
-    "اجراءات البت المالي",
-    "أمر التوريد",
-    "ملاحظات نموذج 19",
-  ];
+  const tabs = isFinancial
+    ? ["عروض الشركات", "اجراءات الفتح المالي", "اجراءات البت المالي"]
+    : ["عروض الشركات", "اجراءات الفتح الفني", "اجراءات البت الفني"];
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -811,8 +804,6 @@ export default function MahdarEjra2at() {
       case "اجراءات الفتح المالي": return <EjraaatAlFathAlMali />;
       case "اجراءات البت الفني": return <EjraaatAlBathAlFani />;
       case "اجراءات البت المالي": return <EjraaatAlBathAlMali />;
-      case "أمر التوريد": return <AmrAlTawrid />;
-      case "ملاحظات نموذج 19": return <MolahazatNamozhag19 />;
       default: return null;
     }
   };
@@ -826,7 +817,9 @@ export default function MahdarEjra2at() {
           <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">20252028</span>
         </div>
         <div className="flex-1 flex justify-center">
-          <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">محضر اجراءات الفتح والبت الفني</h1>
+          <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">
+            {isFinancial ? "محضر اجراءات الفتح والبت المالي" : "محضر اجراءات الفتح والبت الفني"}
+          </h1>
         </div>
         <div className="flex flex-col gap-2">
           <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">قسم المشتريات</button>
@@ -894,10 +887,17 @@ export default function MahdarEjra2at() {
         <div className="flex items-center gap-2">
           <label className="font-medium">نوع اللجنة</label>
           <select value={naw3Lajna} onChange={(e) => setNaw3Lajna(e.target.value)} className="border border-gray-300 rounded px-2 py-1 bg-background">
-            <option>لجنة فتح المطاريف الفنية</option>
-            <option>لجنة فتح المطاريف المالية</option>
-            <option>لجنة البت الفني</option>
-            <option>لجنة البت المالي</option>
+            {isFinancial ? (
+              <>
+                <option>لجنة فتح المطاريف المالية</option>
+                <option>لجنة البت المالي</option>
+              </>
+            ) : (
+              <>
+                <option>لجنة فتح المطاريف الفنية</option>
+                <option>لجنة البت الفني</option>
+              </>
+            )}
           </select>
         </div>
         <div className="flex items-center gap-2">
@@ -916,7 +916,9 @@ export default function MahdarEjra2at() {
           <input value={byanLajna} onChange={(e) => setByanLajna(e.target.value)} className="border border-gray-300 rounded px-2 py-1 bg-background w-40" />
         </div>
         <div className="flex items-center gap-2">
-          <label className="font-medium">لجنة فتح المطاريف الفنية</label>
+          <label className="font-medium">
+            {isFinancial ? "لجنة فتح المطاريف المالية" : "لجنة فتح المطاريف الفنية"}
+          </label>
           <input className="border border-gray-300 rounded px-2 py-1 bg-background w-40" />
         </div>
       </div>
@@ -944,4 +946,15 @@ export default function MahdarEjra2at() {
       </div>
     </div>
   );
+}
+
+// ────────────────────────────────────────────────
+// Main Components
+// ────────────────────────────────────────────────
+export default function MahdarEjra2at() {
+  return <MahdarEjra2atPage />;
+}
+
+export function MahdarEjra2atMali() {
+  return <MahdarEjra2atPage isFinancial />;
 }
