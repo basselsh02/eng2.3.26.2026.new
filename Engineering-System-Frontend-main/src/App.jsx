@@ -29,6 +29,12 @@ import TasjilKhetabaatAlDaman from "./components/pages/Hesabat/TasjilKhetabaatAl
 import AlTaqarir from "./components/pages/Hesabat/AlTaqarir";
 import MutabaatDukholWaKhuroojAlMustakhlasat from "./components/pages/Hesabat/MutabaatDukholWaKhuroojAlMustakhlasat";
 
+// مكتب المشتريات pages
+import MohamatAlModirMashtarawat from "./components/pages/Mashtarawat/MohamatAlModirMashtarawat";
+import MohamatAlMowazafMashtarawat from "./components/pages/Mashtarawat/MohamatAlMowazafMashtarawat";
+import ByanatAlmashro3at from "./components/pages/Mashtarawat/ByanatAlmashro3at";
+import MahdarEjra2at, { MahdarEjra2atMali } from "./components/pages/Mashtarawat/MahdarEjra2at";
+
 import store from "./app/store";
 
 const router = createBrowserRouter([
@@ -70,6 +76,13 @@ const router = createBrowserRouter([
       { path: "hesabat/tasjil-khetabaat-aldaman", element: <TasjilKhetabaatAlDaman /> },
       { path: "hesabat/altaqarir", element: <AlTaqarir /> },
       { path: "hesabat/mutabaat-dukhol-wa-khurooj-almustakhlasat", element: <MutabaatDukholWaKhuroojAlMustakhlasat /> },
+
+      // مكتب المشتريات
+      { path: "mashtarawat/mohamat-almodir", element: <MohamatAlModirMashtarawat /> },
+      { path: "mashtarawat/mohamat-almowazaf", element: <MohamatAlMowazafMashtarawat /> },
+      { path: "mashtarawat/byanat-almashro3at", element: <ByanatAlmashro3at /> },
+      { path: "mashtarawat/mahdar-ejra2at-fani", element: <MahdarEjra2at /> },
+      { path: "mashtarawat/mahdar-ejra2at-mali", element: <MahdarEjra2atMali /> },
     ],
   },
 ]);

@@ -4,6 +4,7 @@ import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { TbReportMoney } from "react-icons/tb";
 import { BsCalculator } from "react-icons/bs";
+import { FiShoppingCart } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -198,6 +199,50 @@ const menu = [
             id: "hesabat-mutabaat-mustakhlasat",
             label: "متابعة دخول وخروج المستخلصات",
             path: "/hesabat/mutabaat-dukhol-wa-khurooj-almustakhlasat",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-mashtarawat",
+    label: "مكتب المشتريات",
+    icon: <FiShoppingCart className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "mashtarawat-mohamat-almodir",
+        label: "مهام المدير",
+        isDropdown: false,
+        children: [],
+        path: "/mashtarawat/mohamat-almodir",
+      },
+      {
+        id: "mashtarawat-mohamat-almowazaf",
+        label: "مهام الموظف",
+        isDropdown: false,
+        children: [],
+        path: "/mashtarawat/mohamat-almowazaf",
+      },
+      {
+        id: "mashtarawat-safhat-al3amal",
+        label: "صفحات العمل",
+        isDropdown: false,
+        children: [
+          {
+            id: "mashtarawat-byanat-almashro3at",
+            label: "بيانات المشروعات",
+            path: "/mashtarawat/byanat-almashro3at",
+          },
+          {
+            id: "mashtarawat-mahdar-fani",
+            label: "محضر اجراءات الفتح والبت الفني",
+            path: "/mashtarawat/mahdar-ejra2at-fani",
+          },
+          {
+            id: "mashtarawat-mahdar-mali",
+            label: "محضر اجراءات الفتح والبت المالي",
+            path: "/mashtarawat/mahdar-ejra2at-mali",
           },
         ],
       },
