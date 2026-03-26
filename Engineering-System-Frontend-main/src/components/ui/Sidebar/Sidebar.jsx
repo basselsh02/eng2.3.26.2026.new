@@ -81,21 +81,6 @@ const menu = [
         label: "مهام المدير",
         isDropdown: false,
         children: [
-          {
-            id: "ejra2at",
-            label: "الاجراءات",
-            path: "/oqood/ejra2at",
-          },
-          {
-            id: "ejra2at-maliya",
-            label: "الاجراءات المالية",
-            path: "/oqood/ejra2at-maliya",
-          },
-          {
-            id: "tasjil-almawqif-almali",
-            label: "تسجيل الموقف المالي للمشروعات",
-            path: "/oqood/tasjil-almawqif-almali",
-          },
         ],
       },
       {
@@ -103,16 +88,6 @@ const menu = [
         label: "مهام الموظف",
         isDropdown: false,
         children: [
-          {
-            id: "oqood-byanat-almashro3",
-            label: "بيانات المشروع",
-            path: "/oqood/byanat-almashro3",
-          },
-          {
-            id: "oqood-tasjil-byan",
-            label: "تسجيل بيان المشروع",
-            path: "/oqood/tasjil-byan-almashro3",
-          },
         ],
       },
       {
