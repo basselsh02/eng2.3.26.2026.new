@@ -299,12 +299,12 @@ export default function IstkmalByanat() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 border-b border-gray-200 pb-1 overflow-x-auto">
+      <div className="flex gap-4 border-b border-gray-200 pb-1">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-sm font-medium transition-colors ${
               activeTab === tab
                 ? "text-primary-600 border-b-2 border-primary-600 -mb-1 font-bold"
                 : "text-gray-500 hover:text-primary-500"
