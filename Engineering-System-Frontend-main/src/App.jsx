@@ -20,6 +20,10 @@ import TasjilAlMawqifAlMali from "./components/pages/Oqood/TasjilAlMawqifAlMali"
 import ByanatAlmashro3Oqood from "./components/pages/Oqood/ByanatAlmashro3Oqood";
 import TasjilByanAlMashro3 from "./components/pages/Oqood/TasjilByanAlMashro3";
 
+// مكتب الميزانية pages
+import TasjilAlMakhsamat from "./components/pages/Mizaniya/TasjilAlMakhsamat";
+import ByanAlTa3aqud from "./components/pages/Mizaniya/ByanAlTa3aqud";
+
 import store from "./app/store";
 
 const router = createBrowserRouter([
@@ -52,6 +56,10 @@ const router = createBrowserRouter([
       // مكتب العقود - مهام الموظف / صفحات العمل
       { path: "oqood/byanat-almashro3", element: <ByanatAlmashro3Oqood /> },
       { path: "oqood/tasjil-byan-almashro3", element: <TasjilByanAlMashro3 /> },
+
+      // مكتب الميزانية - صفحات العمل
+      { path: "mizaniya/tasjil-almakhsamat", element: <TasjilAlMakhsamat /> },
+      { path: "mizaniya/byan-alta3aqud", element: <ByanAlTa3aqud /> },
     ],
   },
 ]);
