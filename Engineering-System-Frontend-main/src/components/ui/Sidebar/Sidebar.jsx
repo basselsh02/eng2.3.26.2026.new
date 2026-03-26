@@ -87,6 +87,11 @@ const menu = [
             path: "/oqood/ejra2at",
           },
           {
+            id: "ejra2at-maliya",
+            label: "الاجراءات المالية",
+            path: "/oqood/ejra2at-maliya",
+          },
+          {
             id: "tasjil-almawqif-almali",
             label: "تسجيل الموقف المالي للمشروعات",
             path: "/oqood/tasjil-almawqif-almali",
@@ -119,6 +124,11 @@ const menu = [
             id: "oqood-ejra2at-2",
             label: "الاجراءات",
             path: "/oqood/ejra2at",
+          },
+          {
+            id: "oqood-ejra2at-maliya-2",
+            label: "الاجراءات المالية",
+            path: "/oqood/ejra2at-maliya",
           },
           {
             id: "oqood-byanat-2",
