@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { MdOutlinePublish } from "react-icons/md";
+import { PiFilesLight } from "react-icons/pi";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -27,16 +28,13 @@ const menu = [
         id: "mohamat-almodir",
         label: "مهام المدير",
         path: "/nashr/mohamat-almodir",
-        children: [
-          
-        ],
+        children: [],
       },
       {
         id: "mohamat-almowazaf",
         label: "مهام الموظف",
         path: "/nashr/mohamat-almowazaf",
-        children: [
-        ],
+        children: [],
       },
       {
         id: "safhat-al3amal",
@@ -63,10 +61,79 @@ const menu = [
             label: "بيع الكراسات واستلام التأمين الابتدائي",
             path: "/nashr/bay3-krassat",
           },
-                    {
+          {
             id: "tiba3a-mozakrat",
             label: "طباعة مذكرات النشر",
             path: "/nashr/tiba3a-mozakrat",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-oqood",
+    label: "مكتب العقود",
+    icon: <PiFilesLight className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "oqood-mohamat-almodir",
+        label: "مهام المدير",
+        isDropdown: false,
+        children: [
+          {
+            id: "ejra2at",
+            label: "الاجراءات",
+            path: "/oqood/ejra2at",
+          },
+          {
+            id: "tasjil-almawqif-almali",
+            label: "تسجيل الموقف المالي للمشروعات",
+            path: "/oqood/tasjil-almawqif-almali",
+          },
+        ],
+      },
+      {
+        id: "oqood-mohamat-almowazaf",
+        label: "مهام الموظف",
+        isDropdown: false,
+        children: [
+          {
+            id: "oqood-byanat-almashro3",
+            label: "بيانات المشروع",
+            path: "/oqood/byanat-almashro3",
+          },
+          {
+            id: "oqood-tasjil-byan",
+            label: "تسجيل بيان المشروع",
+            path: "/oqood/tasjil-byan-almashro3",
+          },
+        ],
+      },
+      {
+        id: "oqood-safhat-al3amal",
+        label: "صفحات العمل",
+        isDropdown: false,
+        children: [
+          {
+            id: "oqood-ejra2at-2",
+            label: "الاجراءات",
+            path: "/oqood/ejra2at",
+          },
+          {
+            id: "oqood-byanat-2",
+            label: "بيانات المشروع",
+            path: "/oqood/byanat-almashro3",
+          },
+          {
+            id: "oqood-tasjil-byan-2",
+            label: "تسجيل بيان المشروع",
+            path: "/oqood/tasjil-byan-almashro3",
+          },
+          {
+            id: "oqood-mawqif-mali",
+            label: "تسجيل الموقف المالي للمشروعات",
+            path: "/oqood/tasjil-almawqif-almali",
           },
         ],
       },

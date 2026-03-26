@@ -13,6 +13,12 @@ import ByanatAlmashro3 from "./components/pages/Nashr/ByanatAlmashro3";
 import IstkmalByanat from "./components/pages/Nashr/IstkmalByanat";
 import IdafaShorot from "./components/pages/Nashr/IdafaShorot";
 
+// مكتب العقود pages
+import Ejra2at from "./components/pages/Oqood/Ejra2at";
+import TasjilAlMawqifAlMali from "./components/pages/Oqood/TasjilAlMawqifAlMali";
+import ByanatAlmashro3Oqood from "./components/pages/Oqood/ByanatAlmashro3Oqood";
+import TasjilByanAlMashro3 from "./components/pages/Oqood/TasjilByanAlMashro3";
+
 import store from "./app/store";
 
 const router = createBrowserRouter([
@@ -36,6 +42,14 @@ const router = createBrowserRouter([
       { path: "nashr/tarshih-alsharaket", element: <ByanatAlmashro3 /> },
       { path: "nashr/istkmal-byanat", element: <IstkmalByanat /> },
       { path: "nashr/idafa-shorot", element: <IdafaShorot /> },
+
+      // مكتب العقود - مهام المدير
+      { path: "oqood/ejra2at", element: <Ejra2at /> },
+      { path: "oqood/tasjil-almawqif-almali", element: <TasjilAlMawqifAlMali /> },
+
+      // مكتب العقود - مهام الموظف / صفحات العمل
+      { path: "oqood/byanat-almashro3", element: <ByanatAlmashro3Oqood /> },
+      { path: "oqood/tasjil-byan-almashro3", element: <TasjilByanAlMashro3 /> },
     ],
   },
 ]);
