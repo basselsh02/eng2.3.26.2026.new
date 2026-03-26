@@ -3,6 +3,7 @@ import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi
 import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { TbReportMoney } from "react-icons/tb";
+import { HiOutlineShoppingCart } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -155,6 +156,55 @@ const menu = [
             id: "mizaniya-byan-ta3aqud",
             label: "تسجيل بيان التعاقد والموازنة والصرف",
             path: "/mizaniya/byan-alta3aqud",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-mashtarawat",
+    label: "مكتب المشتريات",
+    icon: <HiOutlineShoppingCart className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "mashtarawat-mohamat-almodir",
+        label: "مهام المدير",
+        isDropdown: false,
+        children: [
+          {
+            id: "mashtarawat-modir-1",
+            label: "مهام المدير",
+            path: "/mashtarawat/mohamat-almodir",
+          },
+        ],
+      },
+      {
+        id: "mashtarawat-mohamat-almowazaf",
+        label: "مهام الموظف",
+        isDropdown: false,
+        children: [
+          {
+            id: "mashtarawat-mowazaf-1",
+            label: "مهام الموظف",
+            path: "/mashtarawat/mohamat-almowazaf",
+          },
+        ],
+      },
+      {
+        id: "mashtarawat-safhat-al3amal",
+        label: "صفحات العمل",
+        isDropdown: false,
+        children: [
+          {
+            id: "mashtarawat-byanat-almashro3at",
+            label: "بيانات المشروعات",
+            path: "/mashtarawat/byanat-almashro3at",
+          },
+          {
+            id: "mashtarawat-mahdar-ejra2at",
+            label: "محضر اجراءات الفتح والبت الفني",
+            path: "/mashtarawat/mahdar-ejra2at",
           },
         ],
       },

@@ -24,6 +24,12 @@ import TasjilByanAlMashro3 from "./components/pages/Oqood/TasjilByanAlMashro3";
 import TasjilAlMakhsamat from "./components/pages/Mizaniya/TasjilAlMakhsamat";
 import ByanAlTa3aqud from "./components/pages/Mizaniya/ByanAlTa3aqud";
 
+// مكتب المشتريات pages
+import ByanatAlmashro3at from "./components/pages/Mashtarawat/ByanatAlmashro3at";
+import MahdarEjra2at from "./components/pages/Mashtarawat/MahdarEjra2at";
+import MohamatAlModirMashtarawat from "./components/pages/Mashtarawat/MohamatAlModirMashtarawat";
+import MohamatAlMowazafMashtarawat from "./components/pages/Mashtarawat/MohamatAlMowazafMashtarawat";
+
 import store from "./app/store";
 
 const router = createBrowserRouter([
@@ -60,6 +66,16 @@ const router = createBrowserRouter([
       // مكتب الميزانية - صفحات العمل
       { path: "mizaniya/tasjil-almakhsamat", element: <TasjilAlMakhsamat /> },
       { path: "mizaniya/byan-alta3aqud", element: <ByanAlTa3aqud /> },
+
+      // مكتب المشتريات - مهام المدير
+      { path: "mashtarawat/mohamat-almodir", element: <MohamatAlModirMashtarawat /> },
+
+      // مكتب المشتريات - مهام الموظف
+      { path: "mashtarawat/mohamat-almowazaf", element: <MohamatAlMowazafMashtarawat /> },
+
+      // مكتب المشتريات - صفحات العمل
+      { path: "mashtarawat/byanat-almashro3at", element: <ByanatAlmashro3at /> },
+      { path: "mashtarawat/mahdar-ejra2at", element: <MahdarEjra2at /> },
     ],
   },
 ]);
