@@ -24,11 +24,10 @@ import TasjilByanAlMashro3 from "./components/pages/Oqood/TasjilByanAlMashro3";
 import TasjilAlMakhsamat from "./components/pages/Mizaniya/TasjilAlMakhsamat";
 import ByanAlTa3aqud from "./components/pages/Mizaniya/ByanAlTa3aqud";
 
-// مكتب المشتريات pages
-import ByanatAlmashro3at from "./components/pages/Mashtarawat/ByanatAlmashro3at";
-import MahdarEjra2at, { MahdarEjra2atMali } from "./components/pages/Mashtarawat/MahdarEjra2at";
-import MohamatAlModirMashtarawat from "./components/pages/Mashtarawat/MohamatAlModirMashtarawat";
-import MohamatAlMowazafMashtarawat from "./components/pages/Mashtarawat/MohamatAlMowazafMashtarawat";
+// مكتب الحسابات pages
+import TasjilKhetabaatAlDaman from "./components/pages/Hesabat/TasjilKhetabaatAlDaman";
+import AlTaqarir from "./components/pages/Hesabat/AlTaqarir";
+import MutabaatDukholWaKhuroojAlMustakhlasat from "./components/pages/Hesabat/MutabaatDukholWaKhuroojAlMustakhlasat";
 
 import store from "./app/store";
 
@@ -67,16 +66,10 @@ const router = createBrowserRouter([
       { path: "mizaniya/tasjil-almakhsamat", element: <TasjilAlMakhsamat /> },
       { path: "mizaniya/byan-alta3aqud", element: <ByanAlTa3aqud /> },
 
-      // مكتب المشتريات - مهام المدير
-      { path: "mashtarawat/mohamat-almodir", element: <MohamatAlModirMashtarawat /> },
-
-      // مكتب المشتريات - مهام الموظف
-      { path: "mashtarawat/mohamat-almowazaf", element: <MohamatAlMowazafMashtarawat /> },
-
-      // مكتب المشتريات - صفحات العمل
-      { path: "mashtarawat/byanat-almashro3at", element: <ByanatAlmashro3at /> },
-      { path: "mashtarawat/mahdar-ejra2at", element: <MahdarEjra2at /> },
-      { path: "mashtarawat/mahdar-ejra2at-mali", element: <MahdarEjra2atMali /> },
+      // مكتب الحسابات - صفحات العمل
+      { path: "hesabat/tasjil-khetabaat-aldaman", element: <TasjilKhetabaatAlDaman /> },
+      { path: "hesabat/altaqarir", element: <AlTaqarir /> },
+      { path: "hesabat/mutabaat-dukhol-wa-khurooj-almustakhlasat", element: <MutabaatDukholWaKhuroojAlMustakhlasat /> },
     ],
   },
 ]);

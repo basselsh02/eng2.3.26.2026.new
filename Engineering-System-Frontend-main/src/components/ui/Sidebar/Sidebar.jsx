@@ -3,7 +3,7 @@ import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi
 import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { TbReportMoney } from "react-icons/tb";
-import { HiOutlineShoppingCart } from "react-icons/hi";
+import { BsCalculator } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -162,54 +162,42 @@ const menu = [
     ],
   },
   {
-    id: "maktab-mashtarawat",
-    label: "مكتب المشتريات",
-    icon: <HiOutlineShoppingCart className="size-5" />,
+    id: "maktab-hesabat",
+    label: "مكتب الحسابات",
+    icon: <BsCalculator className="size-5" />,
     isDropdown: true,
     children: [
       {
-        id: "mashtarawat-mohamat-almodir",
+        id: "hesabat-mohamat-almodir",
         label: "مهام المدير",
         isDropdown: false,
-        children: [
-          {
-            id: "mashtarawat-modir-1",
-            label: "مهام المدير",
-            path: "/mashtarawat/mohamat-almodir",
-          },
-        ],
+        children: [],
       },
       {
-        id: "mashtarawat-mohamat-almowazaf",
+        id: "hesabat-mohamat-almowazaf",
         label: "مهام الموظف",
         isDropdown: false,
-        children: [
-          {
-            id: "mashtarawat-mowazaf-1",
-            label: "مهام الموظف",
-            path: "/mashtarawat/mohamat-almowazaf",
-          },
-        ],
+        children: [],
       },
       {
-        id: "mashtarawat-safhat-al3amal",
+        id: "hesabat-safhat-al3amal",
         label: "صفحات العمل",
         isDropdown: false,
         children: [
           {
-            id: "mashtarawat-byanat-almashro3at",
-            label: "بيانات المشروعات",
-            path: "/mashtarawat/byanat-almashro3at",
+            id: "hesabat-tasjil-khetabaat-daman",
+            label: "تسجيل خطابات الضمان",
+            path: "/hesabat/tasjil-khetabaat-aldaman",
           },
           {
-            id: "mashtarawat-mahdar-ejra2at",
-            label: "محضر اجراءات الفتح والبت الفني",
-            path: "/mashtarawat/mahdar-ejra2at",
+            id: "hesabat-taqarir",
+            label: "التقارير",
+            path: "/hesabat/altaqarir",
           },
           {
-            id: "mashtarawat-mahdar-ejra2at-mali",
-            label: "محضر اجراءات الفتح والبت المالي",
-            path: "/mashtarawat/mahdar-ejra2at-mali",
+            id: "hesabat-mutabaat-mustakhlasat",
+            label: "متابعة دخول وخروج المستخلصات",
+            path: "/hesabat/mutabaat-dukhol-wa-khurooj-almustakhlasat",
           },
         ],
       },
