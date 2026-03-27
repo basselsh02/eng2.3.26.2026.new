@@ -3,6 +3,10 @@ import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi
 import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { MdOutlineBuild } from "react-icons/md";
+import { BsBoxes } from "react-icons/bs";
+import { FaBalanceScale } from "react-icons/fa";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+import { RiFundsLine } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -168,6 +172,82 @@ const menu = [
             label: "بيان بالمتوقف في قسم الصيانة حتى تاريخ",
             path: "/siyana/bayan-mutawaqif",
           },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-tawridat",
+    label: "مكتب التوريدات",
+    icon: <BsBoxes className="size-5" />,
+    isDropdown: true,
+    children: [
+      { id: "tawridat-mohamat-almodir", label: "مهام المدير", path: "/tawridat/mohamat-almodir", children: [] },
+      { id: "tawridat-mohamat-almowazaf", label: "مهام الموظف", path: "/tawridat/mohamat-almowazaf", children: [] },
+      {
+        id: "tawridat-safhat-al3amal",
+        label: "صفحات العمل",
+        path: "/tawridat/safhat-al3amal",
+        children: [
+          { id: "tawridat-tasjil-mawqif", label: "تسجيل الموقف الحالي للمشروع", path: "/tawridat/tasjil-almawqif-alhali" },
+          { id: "tawridat-mutabaat-taswyat", label: "متابعة التسويات", path: "/tawridat/mutabaat-altaswyat" },
+          { id: "tawridat-byan-awamar", label: "بيان أوامر التوريد", path: "/tawridat/byan-awamar-tawrid" },
+          { id: "tawridat-daribat", label: "نموذج ضريبة المبيعات", path: "/tawridat/namozhaj-daribat-almabiaat" },
+          { id: "tawridat-taqarir", label: "متابعة التقارير", path: "/tawridat/mutabaat-altaqarir" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-mashtarawat",
+    label: "مكتب المشتريات",
+    icon: <FaBalanceScale className="size-5" />,
+    isDropdown: true,
+    children: [
+      { id: "mashtarawat-mohamat-almodir", label: "مهام المدير", path: "/mashtarawat/mohamat-almodir", children: [] },
+      { id: "mashtarawat-mohamat-almowazaf", label: "مهام الموظف", path: "/mashtarawat/mohamat-almowazaf", children: [] },
+      {
+        id: "mashtarawat-safhat-al3amal",
+        label: "صفحات العمل",
+        path: "/mashtarawat/safhat-al3amal",
+        children: [
+          { id: "mashtarawat-byanat", label: "بيانات المشروعات", path: "/mashtarawat/byanat-almashro3at" },
+          { id: "mashtarawat-mahdar", label: "محضر إجراءات", path: "/mashtarawat/mahdar-ejra2at" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-mizaniya",
+    label: "مكتب الميزانية",
+    icon: <RiFundsLine className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "mizaniya-safhat-al3amal",
+        label: "صفحات العمل",
+        path: "/mizaniya/safhat-al3amal",
+        children: [
+          { id: "mizaniya-ta3aqud", label: "بيان التعاقد", path: "/mizaniya/byan-alta3aqud" },
+          { id: "mizaniya-makhsamat", label: "تسجيل المخصمات", path: "/mizaniya/tasjil-almakhsamat" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "maktab-hesabat",
+    label: "مكتب الحسابات",
+    icon: <HiOutlineClipboardDocumentList className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "hesabat-safhat-al3amal",
+        label: "صفحات العمل",
+        path: "/hesabat/safhat-al3amal",
+        children: [
+          { id: "hesabat-daman", label: "تسجيل خطابات الضمان", path: "/hesabat/tasjil-khetabaat-aldaman" },
+          { id: "hesabat-mutabaat", label: "متابعة دخول وخروج المستخلصات", path: "/hesabat/mutabaat-dukhol-khurooj-almustakhlasat" },
+          { id: "hesabat-taqarir", label: "التقارير", path: "/hesabat/altaqarir" },
         ],
       },
     ],
