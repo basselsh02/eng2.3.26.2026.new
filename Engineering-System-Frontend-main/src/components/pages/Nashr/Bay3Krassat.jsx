@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import TableFilterCell, { applyFilters } from "../../ui/TableFilter/TableFilterCell";
 
 const projectsData = [
   { id: 1, raqmMashro3: "2588888", ismMashro3: "اعمال رفع كفاءة شبكة الكهرباء الرئيسية بالمجمع الطبي بكوبري القبة", taklfaMashro3: "45478744.0000", kodFar3: "12", ismFar3Monafez: "فرع الصيانة" },
@@ -22,6 +23,10 @@ export default function Bay3Krassat() {
   const [searchVal, setSearchVal] = useState("");
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
+  const [filters, setFilters] = useState({raqmMashro3: "", ismMashro3: "", taklfaMashro3: "", kodFar3: "", ismFar3Monafez: ""});
+  const [companyFilters, setCompanyFilters] = useState({ kod: "", ismSharika: "", tamAlShra: "", tariqaDaf3: "" });
+  const filteredRows = useMemo(() => applyFilters(projectsData, filters), [filters]);
+  const filteredCompanies = useMemo(() => applyFilters(companiesData, companyFilters), [companyFilters]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
@@ -40,10 +45,10 @@ export default function Bay3Krassat() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
-        <Input label="العام المالي" showLabel={false} type="select" options={[{ value: amMali, label: amMali }]} />
-        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
+      <div className="flex flex-wrap items-end gap-3 border border-gray-200 rounded p-3 bg-base">
+        <div className="w-full md:w-auto md:min-w-[220px]"><Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly /></div>
+        <div className="w-full md:w-[140px]"><Input label="العام المالي" showLabel={false} type="select" options={[{ value: amMali, label: amMali }]} /></div>
+        <div className="flex-1 min-w-[260px]"><Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
       </div>
 
       {/* Projects Table */}
@@ -57,9 +62,24 @@ export default function Bay3Krassat() {
               <th className="p-3 font-semibold border-l border-gray-200">كود الفرع</th>
               <th className="p-3 font-semibold">اسم الفرع المنفذ</th>
             </tr>
+
+            <tr className="border-b border-gray-200 bg-base align-top">
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.raqmMashro3} onChange={(v) => setFilters((p) => ({ ...p, raqmMashro3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ismMashro3} onChange={(v) => setFilters((p) => ({ ...p, ismMashro3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.taklfaMashro3} onChange={(v) => setFilters((p) => ({ ...p, taklfaMashro3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kodFar3} onChange={(v) => setFilters((p) => ({ ...p, kodFar3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ismFar3Monafez} onChange={(v) => setFilters((p) => ({ ...p, ismFar3Monafez: v }))} placeholder="فلتر" /></th>
+            </tr>
+            <tr className="border-b border-gray-200 bg-base align-top">
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={companyFilters.kod} onChange={(v) => setCompanyFilters((p) => ({ ...p, kod: v }))} placeholder="فلتر الكود" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={companyFilters.ismSharika} onChange={(v) => setCompanyFilters((p) => ({ ...p, ismSharika: v }))} placeholder="فلتر الشركة" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={companyFilters.tamAlShra} onChange={(v) => setCompanyFilters((p) => ({ ...p, tamAlShra: v }))} placeholder="فلتر الشراء" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={companyFilters.tariqaDaf3} onChange={(v) => setCompanyFilters((p) => ({ ...p, tariqaDaf3: v }))} placeholder="فلتر الدفع" /></th>
+              <th className="p-2" />
+            </tr>
           </thead>
           <tbody>
-            {projectsData.map((row, idx) => (
+            {filteredRows.map((row, idx) => (
               <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
                 <td className="p-3 border-l border-gray-100">{row.raqmMashro3}</td>
                 <td className="p-3 border-l border-gray-100 max-w-xs">{row.ismMashro3}</td>
@@ -85,7 +105,7 @@ export default function Bay3Krassat() {
             </tr>
           </thead>
           <tbody>
-            {companiesData.map((row, idx) => (
+            {filteredCompanies.map((row, idx) => (
               <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
                 <td className="p-3 border-l border-gray-100">{row.kod}</td>
                 <td className="p-3 border-l border-gray-100">{row.ismSharika}</td>

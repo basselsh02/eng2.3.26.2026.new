@@ -42,10 +42,10 @@ export default function IdafaShorot() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
-        <Input label="العام المالي" showLabel={false} type="select" options={[{ value: amMali, label: amMali }]} />
-        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
+      <div className="flex flex-wrap items-end gap-3 border border-gray-200 rounded p-3 bg-base">
+        <div className="w-full md:w-auto md:min-w-[220px]"><Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly /></div>
+        <div className="w-full md:w-[140px]"><Input label="العام المالي" showLabel={false} type="select" options={[{ value: amMali, label: amMali }]} /></div>
+        <div className="flex-1 min-w-[260px]"><Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
       </div>
 
       {/* Tabs */}
