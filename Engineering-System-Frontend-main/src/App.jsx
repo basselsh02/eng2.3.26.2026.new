@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
 import Forbidden from "./components/pages/Forbidden/Forbidden";
 import TemplateHome from "./components/pages/TemplateHome/TemplateHome";
@@ -9,6 +10,9 @@ import TemplateHome from "./components/pages/TemplateHome/TemplateHome";
 import Tahsilat from "./components/pages/Nashr/Tahsilat";
 import Bay3Krassat from "./components/pages/Nashr/Bay3Krassat";
 import Tiba3aMozakrat from "./components/pages/Nashr/Tiba3aMozakrat";
+import ManagerTasks from "./components/pages/shared/ManagerTasks";
+import EmployeeTasks from "./components/pages/shared/EmployeeTasks";
+import AssignTask from "./components/pages/shared/AssignTask";
 import ByanatAlmashro3 from "./components/pages/Nashr/ByanatAlmashro3";
 import IstkmalByanat from "./components/pages/Nashr/IstkmalByanat";
 import IdafaShorot from "./components/pages/Nashr/IdafaShorot";
@@ -49,10 +53,12 @@ const router = createBrowserRouter([
       { path: "forbidden", element: <Forbidden /> },
 
       // مكتب النشر - مهام المدير
+      { path: "nashr/mohamat-almodir", element: <ManagerTasks officeId="nashr" officeName="مكتب النشر" /> },
       { path: "nashr/tahsilat", element: <Tahsilat /> },
       { path: "nashr/bay3-krassat", element: <Bay3Krassat /> },
 
       // مكتب النشر - مهام الموظف
+      { path: "nashr/mohamat-almowazaf", element: <EmployeeTasks officeId="nashr" officeName="مكتب النشر" /> },
       { path: "nashr/tiba3a-mozakrat", element: <Tiba3aMozakrat /> },
 
       // مكتب النشر - صفحات العمل
@@ -63,11 +69,11 @@ const router = createBrowserRouter([
       { path: "nashr/idafa-shorot", element: <IdafaShorot /> },
 
       // مكتب العقود - مهام المدير
-      { path: "oqood/ejra2at", element: <Ejra2at /> },
-      { path: "oqood/tasjil-almawqif-almali", element: <TasjilAlMawqifAlMali /> },
+      { path: "oqood/ejra2at", element: <ManagerTasks officeId="oqood" officeName="مكتب العقود" /> },
+      { path: "oqood/tasjil-almawqif-almali", element: <ManagerTasks officeId="oqood" officeName="مكتب العقود" /> },
 
       // مكتب العقود - مهام الموظف / صفحات العمل
-      { path: "oqood/byanat-almashro3", element: <ByanatAlmashro3Oqood /> },
+      { path: "oqood/byanat-almashro3", element: <EmployeeTasks officeId="oqood" officeName="مكتب العقود" /> },
       { path: "oqood/tasjil-byan-almashro3", element: <TasjilByanAlMashro3 /> },
 
       // مكتب الصيانة - صفحات العمل
@@ -96,15 +102,20 @@ const router = createBrowserRouter([
       { path: "hesabat/tasjil-khetabaat-aldaman", element: <TasjilKhetabaatAlDaman /> },
       { path: "hesabat/mutabaat-dukhol-khurooj-almustakhlasat", element: <MutabaatDukholWaKhuroojAlMustakhlasat /> },
       { path: "hesabat/altaqarir", element: <AlTaqarir /> },
+      { path: "assign-task/:officeId/:taskId", element: <AssignTask /> },
     ],
   },
 ]);
 
+const queryClient = new QueryClient();
+
 export default function App() {
   return (
     <Provider store={store}>
-      <Toaster position="top-right" />
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <Toaster position="top-right" />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </Provider>
   );
 }

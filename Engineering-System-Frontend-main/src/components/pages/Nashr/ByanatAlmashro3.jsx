@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import AppSelect from "../../ui/AppSelect/AppSelect";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
 
@@ -46,13 +47,11 @@ function MashroSection() {
   return (
     <div className="space-y-3" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="كود المشروع" showLabel={false} defaultValue="4585551456" />
-        <Input label="كود نوع المشروع" showLabel={false} defaultValue="اعمال المباني" />
+        <Input label="كود نوع المشروع" defaultValue="اعمال المباني" />
         <Input label="العام المالي" type="select" showLabel={false} options={[{ value: "2025/2024", label: "2025/2024" }]} />
         <Input label="تاريخ ورود الكارت" type="select" showLabel={false} options={[{ value: "4585551456", label: "4585551456" }]} />
       </div>
 
-      <Input label="اسم المشروع" showLabel={false} defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 مدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي" />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
         <Input label="تاريخ الاصدار" type="select" showLabel={false} options={[{ value: "2020/2/8", label: "2020/2/8" }]} />
@@ -62,8 +61,7 @@ function MashroSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="الجهة الطالبة" showLabel={false} defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" />
-        <Button size="sm" variant="primary" className="h-[48px]">تسجيل جهة جديدة</Button>
+        <Input label="الجهة الطالبة" defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" />
         <Input label="التكلفة التقديرية" showLabel={false} defaultValue="125.252.500" />
         <Input label="نسبة العلاوة" showLabel={false} defaultValue="0.25" />
       </div>
@@ -79,7 +77,7 @@ function MashroSection() {
         <Input label="الموظف المسؤل" type="select" showLabel={false} options={[{ value: "الاستاذة/مي", label: "الاستاذة/مي" }]} />
         <Input label="تاريخ الفتح الفعلي" type="select" showLabel={false} options={[{ value: "2025/10/2", label: "2025/10/2" }]} />
         <Input label="المشروع الرئيسي" showLabel={false} defaultValue="4585551456" />
-        <Button size="sm" variant="primary" className="h-[48px]">طباعة تقرير اللجان</Button>
+        <Button size="sm" variant="warning" className="h-[48px]">طباعة تقرير اللجان</Button>
       </div>
     </div>
   );
@@ -87,7 +85,12 @@ function MashroSection() {
 
 function ShorotSection() {
   const [filters, setFilters] = useState({ kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", qima: "", tartib: "" });
-  const filtered = useMemo(() => applyFilters(shorotData, filters), [filters]);
+  const [conditions, setConditions] = useState(shorotData);
+  const filtered = useMemo(() => applyFilters(conditions, filters), [conditions, filters]);
+
+  const addCondition = () => setConditions((prev) => [...prev, { id: Date.now(), kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", tartib: "", qima: "" }]);
+  const removeCondition = (id) => setConditions((prev) => prev.filter((row) => row.id !== id));
+  const updateCondition = (id, key, value) => setConditions((prev) => prev.map((row) => row.id === id ? { ...row, [key]: value } : row));
 
   return (
     <div className="space-y-3" dir="rtl">
@@ -106,7 +109,8 @@ function ShorotSection() {
                 <th className="p-3 font-semibold border-l border-gray-200">مسلسل/ الكود</th>
                 <th className="p-3 font-semibold border-l border-gray-200">وصف الشرط</th>
                 <th className="p-3 font-semibold border-l border-gray-200">القيمة</th>
-                <th className="p-3 font-semibold">ترتيب الشروط</th>
+                <th className="p-3 font-semibold border-l border-gray-200">ترتيب الشروط</th>
+                <th className="p-3 font-semibold">إجراء</th>
               </tr>
               <tr className="border-b border-gray-200 bg-base align-top">
                 <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kod} onChange={(v) => setFilters((p) => ({ ...p, kod: v }))} placeholder="فلتر كود نوع الشرط" /></th>
@@ -114,29 +118,39 @@ function ShorotSection() {
                 <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.mosalsal} onChange={(v) => setFilters((p) => ({ ...p, mosalsal: v }))} placeholder="فلتر المسلسل" /></th>
                 <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.wasf} onChange={(v) => setFilters((p) => ({ ...p, wasf: v }))} placeholder="فلتر الوصف" /></th>
                 <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.qima} onChange={(v) => setFilters((p) => ({ ...p, qima: v }))} placeholder="فلتر القيمة" /></th>
-                <th className="p-2"><TableFilterCell value={filters.tartib} onChange={(v) => setFilters((p) => ({ ...p, tartib: v }))} placeholder="فلتر الترتيب" /></th>
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.tartib} onChange={(v) => setFilters((p) => ({ ...p, tartib: v }))} placeholder="فلتر الترتيب" /></th>
+                <th className="p-2"/>
               </tr>
             </thead>
             <tbody>
               {filtered.map((row, idx) => (
                 <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                  <td className="p-3 border-l border-gray-100">{row.kod}</td>
-                  <td className="p-3 border-l border-gray-100">{row.ismNaw3Shart}</td>
-                  <td className="p-3 border-l border-gray-100">{row.mosalsal}</td>
-                  <td className="p-3 border-l border-gray-100 max-w-xs text-xs">{row.wasf}</td>
-                  <td className="p-3 border-l border-gray-100">{row.qima}</td>
-                  <td className="p-3">{row.tartib}</td>
+                  <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.kod} onChange={(e)=>updateCondition(row.id,"kod",e.target.value)} label="kod" /></td>
+                  <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.ismNaw3Shart} onChange={(e)=>updateCondition(row.id,"ismNaw3Shart",e.target.value)} label="ismNaw3Shart" /></td>
+                  <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.mosalsal} onChange={(e)=>updateCondition(row.id,"mosalsal",e.target.value)} label="mosalsal" /></td>
+                  <td className="p-3 border-l border-gray-100 max-w-xs text-xs"><Input showLabel={false} value={row.wasf} onChange={(e)=>updateCondition(row.id,"wasf",e.target.value)} label="wasf" /></td>
+                  <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.qima} onChange={(e)=>updateCondition(row.id,"qima",e.target.value)} label="qima" /></td>
+                  <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.tartib} onChange={(e)=>updateCondition(row.id,"tartib",e.target.value)} label="ترتيب" /></td>
+                  <td className="p-3"><Button size="sm" variant="danger" onClick={() => removeCondition(row.id)}>حذف</Button></td>
                 </tr>
               ))}
             </tbody>
+            <tfoot>
+              <tr className="bg-gray-50 font-semibold">
+                <td className="p-3 border-l border-gray-100">الإجمالي: {rightRows.length}</td>
+                <td className="p-3 border-l border-gray-100">الإجمالي: {rightRows.length}</td>
+                <td className="p-3">الإجمالي: {rightRows.length}</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
 
         <div className="order-1 lg:order-2 flex lg:flex-col gap-2 lg:w-52 self-start">
           <Button size="sm" variant="primary">تسجيل شروط النشر</Button>
+          <Button size="sm" variant="primary" onClick={addCondition}>إضافة شرط</Button>
           <Button size="sm" variant="primary">تحميل شروط المذكرة</Button>
-          <Button size="sm" variant="primary">طباعة العقد</Button>
-          <Button size="sm" variant="primary">طباعة العقد مبدأئي/بدون</Button>
+          <Button size="sm" className="bg-yellow-500 text-white hover:bg-yellow-600">طباعة العقد</Button>
+          <Button size="sm" className="bg-yellow-500 text-white hover:bg-yellow-600">طباعة العقد مبدأئي/بدون</Button>
         </div>
       </div>
     </div>
@@ -146,6 +160,7 @@ function ShorotSection() {
 function TarshihSection() {
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [filtersLeft, setFiltersLeft] = useState({ sharika: "" });
+  const companyOptions = companiesData.map((company) => ({ value: company.sharika, label: company.sharika }));
   const [filtersRight, setFiltersRight] = useState({ sharika: "", raqmSijl: "", raqmMwafaqa: "" });
 
   const leftRows = useMemo(() => applyFilters(companiesData, filtersLeft), [filtersLeft]);
@@ -154,7 +169,7 @@ function TarshihSection() {
   return (
     <div className="space-y-3" dir="rtl">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
-        <Input label="الشركة" showLabel={false} defaultValue="الشركة" />
+        <AppSelect label="الشركة" isCreatable={false} options={companyOptions} value={companyOptions.find((opt) => opt.value === filtersLeft.sharika) || null} onChange={(opt) => setFiltersLeft({ sharika: opt?.value || "" })} />
         <Input label="المقاولون العرب" showLabel={false} defaultValue="المقاولون العرب" />
         <Input label="السجل" showLabel={false} defaultValue="السجل" />
         <Input label="25555" showLabel={false} defaultValue="25555" />
@@ -170,7 +185,7 @@ function TarshihSection() {
                 <th className="p-3 font-semibold">اسم الشركات المرشحة</th>
               </tr>
               <tr className="bg-base border-b border-gray-200">
-                <th className="p-2"><TableFilterCell value={filtersLeft.sharika} onChange={(v) => setFiltersLeft({ sharika: v })} placeholder="فلتر الشركة" /></th>
+                <th className="p-2">-</th>
               </tr>
             </thead>
             <tbody>
@@ -252,12 +267,12 @@ function BunodSection() {
           <tbody>
             {filtered.map((row, idx) => (
               <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-3 border-l border-gray-100">{row.mosalsal}</td>
-                <td className="p-3 border-l border-gray-100">{row.wasf}</td>
-                <td className="p-3 border-l border-gray-100">{row.kod}</td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.mosalsal} onChange={(e)=>updateCondition(row.id,"mosalsal",e.target.value)} label="mosalsal" /></td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.wasf} onChange={(e)=>updateCondition(row.id,"wasf",e.target.value)} label="wasf" /></td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.kod} onChange={(e)=>updateCondition(row.id,"kod",e.target.value)} label="kod" /></td>
                 <td className="p-3 border-l border-gray-100">{row.wahda}</td>
                 <td className="p-3 border-l border-gray-100">{row.kamiya}</td>
-                <td className="p-3 border-l border-gray-100">{row.qima}</td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.qima} onChange={(e)=>updateCondition(row.id,"qima",e.target.value)} label="qima" /></td>
                 <td className="p-3">{row.ijmali}</td>
               </tr>
             ))}
@@ -304,10 +319,10 @@ export default function ByanatAlmashro3() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
+      <div className="flex flex-wrap items-end gap-3 border border-gray-200 rounded p-3 bg-base">
+        <div className="w-full md:w-auto md:min-w-[220px]"><Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly /></div>
         <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
-        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
+        <div className="flex-1 min-w-[260px]"><Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
       </div>
 
       <div className="flex gap-4 border-b border-gray-200 pb-1">

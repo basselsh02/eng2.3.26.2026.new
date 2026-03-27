@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import TableFilterCell, { applyFilters } from "../../ui/TableFilter/TableFilterCell";
 
 const mockData = [
   { id: 1, raqmMashro3: "2588888", ismMashro3: "اعمال رفع كفاءة شبكة الكهرباء الرئيسية بالمجمع الطبي بكوبري القبة", taklfaMashro3: "45478744.0000", kodFar3: "12", ismFar3Monafez: "فرع الصيانة", matbo3: "", meba3: "" },
@@ -15,6 +16,8 @@ export default function Tahsilat() {
   const [searchVal, setSearchVal] = useState("");
   const [kodMashro3, setKodMashro3] = useState("4585551456");
   const [amMali, setAmMali] = useState("2026/2025");
+  const [filters, setFilters] = useState({ raqmMashro3: "", ismMashro3: "", taklfaMashro3: "", kodFar3: "", ismFar3Monafez: "", matbo3: "", meba3: "" });
+  const filteredRows = useMemo(() => applyFilters(mockData, filters), [filters]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
@@ -33,10 +36,10 @@ export default function Tahsilat() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" showLabel={false} value={kodMashro3} onChange={(e) => setKodMashro3(e.target.value)} />
-        <Input label="العام المالي" showLabel={false} type="select" value={amMali} onChange={(e) => setAmMali(e.target.value)} options={[{ value: "2026/2025", label: "2026/2025" }, { value: "2025/2024", label: "2025/2024" }]} />
-        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
+      <div className="flex flex-wrap items-end gap-3 border border-gray-200 rounded p-3 bg-base">
+        <div className="w-full md:w-auto md:min-w-[220px]"><Input label="كود المشروع" showLabel={false} value={kodMashro3} onChange={(e) => setKodMashro3(e.target.value)} /></div>
+        <div className="w-full md:w-[140px]"><Input label="العام المالي" showLabel={false} type="select" value={amMali} onChange={(e) => setAmMali(e.target.value)} options={[{ value: "2026/2025", label: "2026/2025" }, { value: "2025/2024", label: "2025/2024" }]} /></div>
+        <div className="flex-1 min-w-[260px]"><Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
       </div>
 
       {/* Table */}
@@ -53,9 +56,20 @@ export default function Tahsilat() {
               <th className="p-3 font-semibold text-foreground">المباع</th>
               <th className="p-3 font-semibold text-foreground border-l border-gray-200"></th>
             </tr>
+
+            <tr className="border-b border-gray-200 bg-base align-top">
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.raqmMashro3} onChange={(v) => setFilters((p) => ({ ...p, raqmMashro3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ismMashro3} onChange={(v) => setFilters((p) => ({ ...p, ismMashro3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.taklfaMashro3} onChange={(v) => setFilters((p) => ({ ...p, taklfaMashro3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kodFar3} onChange={(v) => setFilters((p) => ({ ...p, kodFar3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ismFar3Monafez} onChange={(v) => setFilters((p) => ({ ...p, ismFar3Monafez: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.matbo3} onChange={(v) => setFilters((p) => ({ ...p, matbo3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.meba3} onChange={(v) => setFilters((p) => ({ ...p, meba3: v }))} placeholder="فلتر" /></th>
+              <th className="p-2"></th>
+            </tr>
           </thead>
           <tbody>
-            {mockData.map((row, idx) => (
+            {filteredRows.map((row, idx) => (
               <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50 transition-colors`}>
                 <td className="p-3 border-l border-gray-100">{row.raqmMashro3}</td>
                 <td className="p-3 border-l border-gray-100 max-w-xs">{row.ismMashro3}</td>
