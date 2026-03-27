@@ -137,9 +137,9 @@ function ShorotSection() {
             </tbody>
             <tfoot>
               <tr className="bg-gray-50 font-semibold">
-                <td className="p-3 border-l border-gray-100">الإجمالي: {rightRows.length}</td>
-                <td className="p-3 border-l border-gray-100">الإجمالي: {rightRows.length}</td>
-                <td className="p-3">الإجمالي: {rightRows.length}</td>
+                <td className="p-3 border-l border-gray-100">الإجمالي: {filtered.length}</td>
+                <td className="p-3 border-l border-gray-100">الإجمالي: {filtered.length}</td>
+                <td className="p-3">الإجمالي: {filtered.length}</td>
               </tr>
             </tfoot>
           </table>
