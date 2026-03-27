@@ -1,224 +1,196 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import SearchBar from "../../ui/SearchBar/SearchBar";
+import DataTable from "../../ui/DataTable/DataTable";
 
 const projectsData = [
-  { id: 1, raqmMashro3: "25/112 مباني", ismMashro3: "انشاء الهيكل رقم 9 ببطاقة رقم 2 بمشروع الواجهة البحرية العربية لمدينة العالمين الجديدة", taklfaMashro3: "100.000.000", kodFar3: "2546", ismFar3Monafez: "اللواء 152 انشاءات" },
-  { id: 2, raqmMashro3: "25/112 مباني", ismMashro3: "انشاء الهيكل رقم 9 ببطاقة رقم 2 بمشروع الواجهة البحرية العربية لمدينة العالمين الجديدة", taklfaMashro3: "100.000.000", kodFar3: "2546", ismFar3Monafez: "اللواء 152 انشاءات" },
+  {
+    id: 1,
+    code: "25/112 مباني",
+    name: "انشاء الهيكل رقم 9 ببطاقة رقم 2 بمشروع الواجهة البحرية العربية",
+    cost: "100.000.000",
+    branchCode: "2546",
+    branchName: "اللواء 152 انشاءات",
+    form: {
+      orderValue: "548745145",
+      taxPercent: "3",
+      orderNumber: "25/مباني/11",
+      taxValue: "154.000",
+      contractDate: "2026/5/8",
+      roundingValue: "0.00",
+      partValue: "0",
+      prepaymentPercent: "3",
+      prepaymentValue: "0",
+      company: "مكتب أصالة للمقاولات العامة",
+      companyAddress: "العريش / شمال سيناء",
+      managerName: "عبدالله على محمد",
+      taxRegistrationNo: "548745145",
+    },
+  },
+  {
+    id: 2,
+    code: "33/201 كهرباء",
+    name: "تطوير شبكة الكهرباء بالمنطقة الصناعية",
+    cost: "75.000.000",
+    branchCode: "3311",
+    branchName: "اللواء 153 كهرباء",
+    form: {
+      orderValue: "11200000",
+      taxPercent: "14",
+      orderNumber: "33/كهرباء/5",
+      taxValue: "1568000",
+      contractDate: "2026/3/14",
+      roundingValue: "0",
+      partValue: "50",
+      prepaymentPercent: "10",
+      prepaymentValue: "1120000",
+      company: "شركة الدلتا للتوريدات",
+      companyAddress: "مدينة نصر - القاهرة",
+      managerName: "محمود سيد أحمد",
+      taxRegistrationNo: "7733001",
+    },
+  },
 ];
 
-const printButtons = [
-  "طباعة العقد/سفر",
-  "طباعة نموذج 1 ضريبة مبيعات",
-  "طباعة العقد القديم",
-  "طباعة 50 ج.ح",
-  "طباعة العقد الجديد/سفر",
-  "طباعة مذكرة العرض",
-  "العقد / بدون سفر",
-  "تحميل اعداد المستندات",
-  "العقد بدون قيم",
-  "طباعة العقد / قانون 204",
-  "طباعة نموذج 41 معدل ضرائب",
-  "العقد/ كمية اضافية",
-  "طباعة الاقرار",
-  "طباعة نموذج 41 معدل / دفعة",
-  "طباعة الشهادة",
-];
+const tabs = ["سجل الإجراءات", "البيانات الضريبية", "الطباعة"];
+
+const makeDefaultForm = (project) => ({ ...project.form });
 
 export default function NamozhajDaribatAlMabiaat() {
-  const [searchVal, setSearchVal] = useState("");
-  const [kodMashro3] = useState("4585551456");
-  const [amMali] = useState("2026/2025");
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [selectedProject, setSelectedProject] = useState(projectsData[0]);
+  const [formData, setFormData] = useState(makeDefaultForm(projectsData[0]));
+  const [projectSearch, setProjectSearch] = useState("");
+  const [selectedProjectDisplay, setSelectedProjectDisplay] = useState(`[${projectsData[0].code}] - ${projectsData[0].name}`);
+
+  const projectColumns = useMemo(
+    () => [
+      { accessorKey: "code", header: "رقم المشروع" },
+      { accessorKey: "name", header: "اسم المشروع" },
+      { accessorKey: "cost", header: "تكلفة المشروع" },
+      { accessorKey: "branchCode", header: "كود الفرع" },
+      { accessorKey: "branchName", header: "اسم الفرع المنفذ" },
+      {
+        id: "select",
+        header: "تحميل",
+        enableColumnFilter: false,
+        cell: ({ row }) => (
+          <Button
+            size="sm"
+            onClick={(event) => {
+              event.stopPropagation();
+              const project = row.original;
+              setSelectedProject(project);
+              setSelectedProjectDisplay(`[${project.code}] - ${project.name}`);
+              setFormData(makeDefaultForm(project));
+            }}
+          >
+            تحميل البيان
+          </Button>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const filteredProjects = useMemo(() => {
+    if (!projectSearch.trim()) return projectsData;
+    const normalized = projectSearch.trim().toLowerCase();
+    return projectsData.filter(
+      (project) =>
+        project.code.toLowerCase().includes(normalized) ||
+        project.name.toLowerCase().includes(normalized),
+    );
+  }, [projectSearch]);
+
+  const handleFieldChange = (field) => (event) => {
+    setFormData((prev) => ({ ...prev, [field]: event.target.value }));
+  };
 
   return (
-    <div className="p-4 space-y-4" dir="rtl">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex flex-col gap-2">
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">TRDD_UF</span>
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">20252028</span>
-        </div>
-        <div className="flex-1 flex justify-center">
-          <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">نموذج ضريبة المبيعات - توريدات</h1>
-        </div>
-        <div className="flex flex-col gap-2">
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">قسم النشر</button>
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">متابعة التحصيل للمشروعات</button>
+    <div className="space-y-4 p-4" dir="rtl">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="rounded bg-primary-500 px-8 py-2 text-xl font-bold text-white">نموذج ضريبة المبيعات - توريدات</h1>
+        <div className="flex items-center gap-2" dir="ltr">
+          <Button variant="warning" size="sm">Print Declaration</Button>
+          <Button variant="warning" size="sm">Print Form 41</Button>
+          <Button variant="warning" size="sm">Download Statement</Button>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4 flex-wrap border border-gray-200 rounded p-3 bg-base text-sm">
-        <div className="flex items-center gap-2 mr-auto">
-          <label className="font-medium">العام المالي</label>
-          <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-            <option>{amMali}</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">كود المشروع</label>
-          <input value={kodMashro3} readOnly className="border border-gray-300 rounded px-2 py-1 bg-background w-32" />
+      <div className="rounded border border-gray-200 bg-base p-3">
+        <SearchBar
+          fields={[
+            { value: "code", label: "رقم المشروع" },
+            { value: "name", label: "اسم المشروع" },
+          ]}
+          placeholder="ابحث عن مشروع"
+          onSearch={(value) => setProjectSearch(value)}
+        />
+        <div className="mt-2 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <Input label="المشروع" value={selectedProjectDisplay} readOnly />
+          <Input label="رقم المشروع" value={selectedProject?.code ?? ""} readOnly />
         </div>
       </div>
 
-      {/* Projects Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-3 font-semibold border-l border-gray-200">رقم المشروع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم المشروع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تكلفة المشروع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">كود الفرع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم الفرع المنفذ</th>
-              <th className="p-3 font-semibold"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {projectsData.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-3 border-l border-gray-100">{row.raqmMashro3}</td>
-                <td className="p-3 border-l border-gray-100 max-w-xs">{row.ismMashro3}</td>
-                <td className="p-3 border-l border-gray-100">{row.taklfaMashro3}</td>
-                <td className="p-3 border-l border-gray-100">{row.kodFar3}</td>
-                <td className="p-3 border-l border-gray-100">{row.ismFar3Monafez}</td>
-                <td className="p-2">
-                  <Button size="sm" variant="secondary">تحميل البيان</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Lower Section */}
-      <div className="flex gap-4">
-        {/* Print Buttons */}
-        <div className="flex flex-col gap-2 w-52 shrink-0">
-          {printButtons.map((btn) => (
-            <Button key={btn} variant="primary" size="sm" fullWidth>{btn}</Button>
+      <div className="rounded border border-gray-200 bg-base p-2">
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`rounded px-4 py-2 text-sm ${
+                activeTab === tab ? "bg-primary-500 text-white" : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {tab}
+            </button>
           ))}
         </div>
 
-        {/* Form Fields */}
-        <div className="flex-1 border border-gray-200 rounded p-4 bg-base space-y-3 text-sm">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">قيمة امر التوريد</label>
-              <input defaultValue="548745145" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">نسبة الضريبة</label>
-              <input defaultValue="3" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">رقم الامر/العقد</label>
-              <input defaultValue="25/مباني/11" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">قيمة الضريبة</label>
-              <div className="flex-1 flex gap-2 items-center">
-                <input defaultValue="154.000" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-                <span className="text-sm font-medium border border-gray-300 rounded px-2 py-1.5 bg-gray-50 whitespace-nowrap">50 ج.ح جزء</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">تاريخ التعاقد</label>
-              <input defaultValue="2026/5/8" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">قيمة التقريب</label>
-              <input defaultValue="0.00" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">قيمة جزء</label>
-              <input defaultValue="0" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">نسبة الدفعة المقدمة</label>
-              <input defaultValue="3" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">قيمة الدفعة المقدمة</label>
-              <input defaultValue="0" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
+        {activeTab === "سجل الإجراءات" && (
+          <div className="mt-3">
+            <DataTable
+              columns={projectColumns}
+              data={filteredProjects}
+              isSearchable
+              selectedRowId={selectedProject?.id}
+              onRowClick={(project) => {
+                setSelectedProject(project);
+                setSelectedProjectDisplay(`[${project.code}] - ${project.name}`);
+                setFormData(makeDefaultForm(project));
+              }}
+            />
           </div>
+        )}
 
-          <div className="grid grid-cols-2 gap-3 border-t border-gray-200 pt-3">
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">القيمة المحسوبية الاثبات</label>
-              <div className="flex-1 flex gap-2">
-                <input defaultValue="548745145" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-                <input defaultValue="0" className="w-16 border border-gray-300 rounded px-2 py-1.5 bg-background" placeholder="%" />
-                <label className="self-center text-xs">النسبة</label>
-                <input defaultValue="0" className="w-20 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-                <label className="self-center text-xs">الارقام</label>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">ضمان اثبات</label>
-              <Button size="sm" variant="secondary">ضمان اثبات</Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">القيمة المحسوبية الصناعة</label>
-              <div className="flex-1 flex gap-2">
-                <input defaultValue="548745145" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-                <input defaultValue="0" className="w-16 border border-gray-300 rounded px-2 py-1.5 bg-background" placeholder="%" />
-                <label className="self-center text-xs">النسبة</label>
-                <input defaultValue="0" className="w-20 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-                <label className="self-center text-xs">الارقام</label>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">ضمان صناعة</label>
-              <Button size="sm" variant="secondary">ضمان صناعة</Button>
-            </div>
+        {activeTab === "البيانات الضريبية" && (
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <Input label="قيمة امر التوريد" value={formData.orderValue} onChange={handleFieldChange("orderValue")} />
+            <Input label="نسبة الضريبة" value={formData.taxPercent} onChange={handleFieldChange("taxPercent")} />
+            <Input label="رقم الامر/العقد" value={formData.orderNumber} onChange={handleFieldChange("orderNumber")} />
+            <Input label="قيمة الضريبة" value={formData.taxValue} onChange={handleFieldChange("taxValue")} />
+            <Input label="تاريخ التعاقد" value={formData.contractDate} onChange={handleFieldChange("contractDate")} />
+            <Input label="قيمة التقريب" value={formData.roundingValue} onChange={handleFieldChange("roundingValue")} />
+            <Input label="قيمة جزء" value={formData.partValue} onChange={handleFieldChange("partValue")} />
+            <Input label="نسبة الدفعة المقدمة" value={formData.prepaymentPercent} onChange={handleFieldChange("prepaymentPercent")} />
+            <Input label="قيمة الدفعة المقدمة" value={formData.prepaymentValue} onChange={handleFieldChange("prepaymentValue")} />
+            <Input label="الشركة" value={formData.company} onChange={handleFieldChange("company")} />
+            <Input label="عنوان الشركة" value={formData.companyAddress} onChange={handleFieldChange("companyAddress")} />
+            <Input label="اسم المدير المسؤل" value={formData.managerName} onChange={handleFieldChange("managerName")} />
+            <Input label="رقم التسجيل بضريبة المبيعات" value={formData.taxRegistrationNo} onChange={handleFieldChange("taxRegistrationNo")} />
           </div>
+        )}
 
-          <div className="grid grid-cols-2 gap-3 border-t border-gray-200 pt-3">
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">الشركة</label>
-              <input defaultValue="مكتب اصالة للمقاولات العامة" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">عنوان الشركة</label>
-              <input defaultValue="شن عثمان بن عفمان / قسم ثان العريش / شمال سيناء" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">اسم المدير المسؤل</label>
-              <input defaultValue="عبدالله على محمد" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">بيان السلفة</label>
-              <input defaultValue="3" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">رقم التسجيل بضريبة المبيعات</label>
-              <input defaultValue="548745145" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">المأمورية التابعة لها</label>
-              <input defaultValue="العريش" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">رقم البطاقة الضريبية عامة</label>
-              <input defaultValue="548745145" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">المأمورية التابعة لها</label>
-              <input defaultValue="العريش" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="font-medium w-44 shrink-0 text-right">رقم الملف الضريبي</label>
-              <input defaultValue="15448" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            </div>
+        {activeTab === "الطباعة" && (
+          <div className="mt-4 flex justify-start gap-2" dir="ltr">
+            <Button variant="warning">Print Declaration</Button>
+            <Button variant="warning">Print Form 41</Button>
+            <Button variant="warning">Download Statement</Button>
           </div>
-
-          <div className="flex gap-2 pt-2">
-            <Button variant="primary" size="sm">طباعة نموذج 41 جزء</Button>
-            <Button variant="secondary" size="sm">طباعة الاقرار</Button>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

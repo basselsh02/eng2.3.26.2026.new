@@ -1,152 +1,196 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import AppSelect from "../../ui/AppSelect/AppSelect";
+import SearchBar from "../../ui/SearchBar/SearchBar";
+import DataTable from "../../ui/DataTable/DataTable";
 
-const taswyatData = [
-  { id: 1, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هية محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "بوجد سلف على الشركة رئيس الفحص نقيب كريم خالد" },
-  { id: 2, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هية محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "بوجد سلف على الشركة رئيس الفحص نقيب كريم خالد" },
-  { id: 3, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هية محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "بوجد سلف على الشركة رئيس الفحص نقيب كريم خالد" },
-  { id: 4, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هية محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "بوجد سلف على الشركة رئيس الفحص نقيب كريم خالد" },
-  { id: 5, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هية محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "بوجد سلف على الشركة رئيس الفحص نقيب كريم خالد" },
-  { id: 6, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هية محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "بوجد سلف على الشركة رئيس الفحص نقيب كريم خالد" },
+const projectsData = [
+  {
+    id: 1,
+    code: "4585551456",
+    name: "إنشاء الهيكل الخرساني رقم 2 بمحور 9 طوابي",
+    description: "اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 فدان المرحلة الثانية",
+    orderValue: "4585551456",
+    companyCode: "658554",
+    companyName: "مركز تدريب المنشاة النموذجي",
+    orders: ["أ/توريد/11"],
+  },
+  {
+    id: 2,
+    code: "7890012244",
+    name: "تطوير شبكة الكهرباء بالمنطقة الصناعية",
+    description: "أعمال تطوير شبكة الكهرباء وإنارة الطرق الداخلية",
+    orderValue: "19987500",
+    companyCode: "777001",
+    companyName: "شركة الدلتا للتوريدات",
+    orders: ["أ/توريد/22", "أ/توريد/22-ملحق"],
+  },
 ];
 
+const taswyatData = [
+  { id: 1, m: "45", tarikhWurudMashtarawat: "2026/1/8", tarikhWurudTaswyat: "2026/1/8", tarikhBudayaEjraa: "2026/1/8", kodMurajia: "544", ismMurajia: "أ/ هبة محدث", tarikhErsalHaiya: "2026/1/8", qimaTaswyat: "15245445", molahazat: "يوجد سلف على الشركة" },
+  { id: 2, m: "46", tarikhWurudMashtarawat: "2026/1/9", tarikhWurudTaswyat: "2026/1/9", tarikhBudayaEjraa: "2026/1/10", kodMurajia: "545", ismMurajia: "أ/ كريم خالد", tarikhErsalHaiya: "2026/1/10", qimaTaswyat: "1754000", molahazat: "تم الرد من الهيئة" },
+];
+
+const tabs = ["سجل الإجراءات", "بيانات التسوية", "طباعة/تحميل"];
+
 export default function MutabaatAlTaswyat() {
-  const [searchVal, setSearchVal] = useState("");
-  const [kodMashro3] = useState("4585551456");
+  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [amMali] = useState("2026/2025");
+  const [selectedProject, setSelectedProject] = useState(projectsData[0]);
+  const [projectSearch, setProjectSearch] = useState("");
+  const [searchDisplay, setSearchDisplay] = useState(`[${projectsData[0].code}] - ${projectsData[0].name}`);
+  const [selectedOrder, setSelectedOrder] = useState(projectsData[0].orders[0]);
+
+  const projectColumns = useMemo(
+    () => [
+      { accessorKey: "code", header: "رقم المشروع" },
+      { accessorKey: "name", header: "اسم المشروع" },
+      {
+        id: "choose",
+        header: "اختيار",
+        enableColumnFilter: false,
+        cell: ({ row }) => (
+          <Button
+            size="sm"
+            onClick={(event) => {
+              event.stopPropagation();
+              const project = row.original;
+              setSelectedProject(project);
+              setSearchDisplay(`[${project.code}] - ${project.name}`);
+              setSelectedOrder(project.orders[0]);
+            }}
+          >
+            تحميل
+          </Button>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const taswyatColumns = useMemo(
+    () => [
+      { accessorKey: "m", header: "م" },
+      { accessorKey: "tarikhWurudMashtarawat", header: "تاريخ الورود من المشتريات" },
+      { accessorKey: "tarikhWurudTaswyat", header: "تاريخ ورود التسوية" },
+      { accessorKey: "tarikhBudayaEjraa", header: "تاريخ بداية الاجراء" },
+      { accessorKey: "kodMurajia", header: "كود المراجع" },
+      { accessorKey: "ismMurajia", header: "اسم المراجع" },
+      { accessorKey: "tarikhErsalHaiya", header: "تاريخ الارسال للهيئة" },
+      { accessorKey: "qimaTaswyat", header: "قيمة التسوية" },
+      { accessorKey: "molahazat", header: "الملاحظات" },
+    ],
+    [],
+  );
+
+  const filteredProjects = useMemo(() => {
+    if (!projectSearch.trim()) return projectsData;
+    const normalized = projectSearch.trim().toLowerCase();
+    return projectsData.filter(
+      (project) =>
+        project.code.toLowerCase().includes(normalized) ||
+        project.name.toLowerCase().includes(normalized),
+    );
+  }, [projectSearch]);
 
   return (
-    <div className="p-4 space-y-4" dir="rtl">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex flex-col gap-2">
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">TRDD_UF</span>
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">20252028</span>
-        </div>
-        <div className="flex-1 flex justify-center">
-          <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">متابعة التسويات</h1>
-        </div>
-        <div className="flex flex-col gap-2">
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">قسم النشر</button>
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">متابعة التحصيل للمشروعات</button>
+    <div className="space-y-4 p-4" dir="rtl">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="rounded bg-primary-500 px-8 py-2 text-xl font-bold text-white">متابعة التسويات</h1>
+        <div className="flex items-center gap-2" dir="ltr">
+          <Button variant="warning" size="sm">Print Declaration</Button>
+          <Button variant="warning" size="sm">Print Form 41</Button>
+          <Button variant="warning" size="sm">Download Statement</Button>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4 flex-wrap border border-gray-200 rounded p-3 bg-base text-sm">
-        <div className="flex items-center gap-2 mr-auto">
+      <div className="flex flex-wrap items-center gap-4 rounded border border-gray-200 bg-base p-3 text-sm">
+        <div className="mr-auto flex items-center gap-2">
           <label className="font-medium">العام المالي</label>
-          <select className="border border-gray-300 rounded px-2 py-1 bg-background">
+          <select className="rounded border border-gray-300 bg-background px-2 py-1">
             <option>{amMali}</option>
           </select>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">كود المشروع</label>
-          <input value={kodMashro3} readOnly className="border border-gray-300 rounded px-2 py-1 bg-background w-32" />
+
+        <div className="flex min-w-[340px] flex-1 flex-col gap-2">
+          <SearchBar
+            fields={[
+              { value: "code", label: "رقم المشروع" },
+              { value: "name", label: "اسم المشروع" },
+            ]}
+            placeholder="ابحث عن مشروع"
+            onSearch={(value) => setProjectSearch(value)}
+          />
+          <Input label="المشروع المختار" value={searchDisplay} readOnly showLabel={false} />
         </div>
       </div>
 
-      {/* Search */}
-      <div className="flex items-center gap-2 border border-gray-200 rounded p-2 bg-base">
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <button className="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-        <input value={searchVal} onChange={(e) => setSearchVal(e.target.value)} placeholder="البحث" className="flex-1 bg-transparent outline-none text-sm" />
-      </div>
-
-      {/* Main Form */}
-      <div className="bg-base border border-gray-200 rounded p-4 space-y-3 text-sm">
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="primary">تأكيد ورود الامر</Button>
+      <div className="rounded border border-gray-200 bg-base p-2">
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`rounded px-4 py-2 text-sm ${
+                activeTab === tab ? "bg-primary-500 text-white" : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">كود المشروع</label>
-            <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">الوصف</label>
-            <input defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 فدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">رقم أمر التوريد</label>
-            <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">تاريخ أمر التوريد</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2020/2/8</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">قيمة الامر</label>
-            <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">قيمة الخصم</label>
-            <input defaultValue="0" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">نسبة الخصم %</label>
-            <input defaultValue="0" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">القيمة الفعلية للامر</label>
-            <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">الشركة</label>
-            <input defaultValue="658554" className="w-24 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-            <input defaultValue="مركز تدريب المنشاة النموذجي بالهايكسنت" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-44 shrink-0 text-right">اسم الشركة</label>
-            <input defaultValue="مركز تدريب المنشاة النموذجي بالهايكسنت" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-        </div>
-      </div>
+        {activeTab === "سجل الإجراءات" && (
+          <div className="mt-3 space-y-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <Input label="رقم المشروع" value={selectedProject?.code ?? ""} readOnly />
+              <Input label="الوصف" value={selectedProject?.description ?? ""} onChange={() => {}} />
 
-      {/* Taswyat Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-3 font-semibold border-l border-gray-200">م</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تاريخ الورود من المشتريات</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تاريخ ورود التسوية</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تاريخ بداية الاجراء</th>
-              <th className="p-3 font-semibold border-l border-gray-200">كود المراجع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم المراجع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تاريخ الارسال للهيئة</th>
-              <th className="p-3 font-semibold border-l border-gray-200">قيمة التسوية</th>
-              <th className="p-3 font-semibold">الملاحظات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {taswyatData.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-3 border-l border-gray-100">{row.m}</td>
-                <td className="p-3 border-l border-gray-100">{row.tarikhWurudMashtarawat}</td>
-                <td className="p-3 border-l border-gray-100">{row.tarikhWurudTaswyat}</td>
-                <td className="p-3 border-l border-gray-100">{row.tarikhBudayaEjraa}</td>
-                <td className="p-3 border-l border-gray-100">{row.kodMurajia}</td>
-                <td className="p-3 border-l border-gray-100">{row.ismMurajia}</td>
-                <td className="p-3 border-l border-gray-100">{row.tarikhErsalHaiya}</td>
-                <td className="p-3 border-l border-gray-100">{row.qimaTaswyat}</td>
-                <td className="p-3">{row.molahazat}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <div>
+                {selectedProject?.orders?.length > 1 ? (
+                  <AppSelect
+                    label="رقم أمر التوريد"
+                    isCreatable={false}
+                    options={selectedProject.orders.map((order) => ({ value: order, label: order }))}
+                    value={selectedOrder ? { value: selectedOrder, label: selectedOrder } : null}
+                    onChange={(option) => setSelectedOrder(option?.value || "")}
+                  />
+                ) : (
+                  <Input label="رقم أمر التوريد" value={selectedOrder || ""} onChange={(event) => setSelectedOrder(event.target.value)} />
+                )}
+              </div>
+
+              <Input label="قيمة الامر" value={selectedProject?.orderValue ?? ""} onChange={() => {}} />
+              <Input label="كود الشركة" value={selectedProject?.companyCode ?? ""} onChange={() => {}} />
+              <Input label="اسم الشركة" value={selectedProject?.companyName ?? ""} onChange={() => {}} />
+            </div>
+
+            <DataTable
+              columns={projectColumns}
+              data={filteredProjects}
+              isSearchable
+              selectedRowId={selectedProject?.id}
+              onRowClick={(project) => {
+                setSelectedProject(project);
+                setSearchDisplay(`[${project.code}] - ${project.name}`);
+                setSelectedOrder(project.orders[0]);
+              }}
+            />
+          </div>
+        )}
+
+        {activeTab === "بيانات التسوية" && <DataTable columns={taswyatColumns} data={taswyatData} isSearchable />}
+
+        {activeTab === "طباعة/تحميل" && (
+          <div className="mt-4 flex justify-start gap-2" dir="ltr">
+            <Button variant="warning">Print Declaration</Button>
+            <Button variant="warning">Print Form 41</Button>
+            <Button variant="warning">Download Statement</Button>
+          </div>
+        )}
       </div>
     </div>
   );
