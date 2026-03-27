@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
-import { TbReportMoney } from "react-icons/tb";
-import { BsCalculator } from "react-icons/bs";
-import { FiShoppingCart, FiTruck } from "react-icons/fi";
+import { MdOutlineBuild } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -83,13 +81,35 @@ const menu = [
         id: "oqood-mohamat-almodir",
         label: "مهام المدير",
         isDropdown: false,
-        children: [],
+        children: [
+          {
+            id: "ejra2at",
+            label: "الاجراءات",
+            path: "/oqood/ejra2at",
+          },
+          {
+            id: "tasjil-almawqif-almali",
+            label: "تسجيل الموقف المالي للمشروعات",
+            path: "/oqood/tasjil-almawqif-almali",
+          },
+        ],
       },
       {
         id: "oqood-mohamat-almowazaf",
         label: "مهام الموظف",
         isDropdown: false,
-        children: [],
+        children: [
+          {
+            id: "oqood-byanat-almashro3",
+            label: "بيانات المشروع",
+            path: "/oqood/byanat-almashro3",
+          },
+          {
+            id: "oqood-tasjil-byan",
+            label: "تسجيل بيان المشروع",
+            path: "/oqood/tasjil-byan-almashro3",
+          },
+        ],
       },
       {
         id: "oqood-safhat-al3amal",
@@ -100,11 +120,6 @@ const menu = [
             id: "oqood-ejra2at-2",
             label: "الاجراءات",
             path: "/oqood/ejra2at",
-          },
-          {
-            id: "oqood-ejra2at-maliya-2",
-            label: "الاجراءات المالية",
-            path: "/oqood/ejra2at-maliya",
           },
           {
             id: "oqood-byanat-2",
@@ -126,178 +141,32 @@ const menu = [
     ],
   },
   {
-    id: "maktab-mizaniya",
-    label: "مكتب الميزانية",
-    icon: <TbReportMoney className="size-5" />,
+    id: "maktab-siyana",
+    label: "مكتب الصيانة",
+    icon: <MdOutlineBuild className="size-5" />,
     isDropdown: true,
     children: [
       {
-        id: "mizaniya-mohamat-almodir",
+        id: "siyana-mohamat-almodir",
         label: "مهام المدير",
         isDropdown: false,
         children: [],
       },
       {
-        id: "mizaniya-mohamat-almowazaf",
+        id: "siyana-mohamat-almowazaf",
         label: "مهام الموظف",
         isDropdown: false,
         children: [],
       },
       {
-        id: "mizaniya-safhat-al3amal",
+        id: "siyana-safhat-al3amal",
         label: "صفحات العمل",
         isDropdown: false,
         children: [
           {
-            id: "mizaniya-tasjil-makhsamat",
-            label: "تسجيل المخصمات المالية",
-            path: "/mizaniya/tasjil-almakhsamat",
-          },
-          {
-            id: "mizaniya-byan-ta3aqud",
-            label: "تسجيل بيان التعاقد والموازنة والصرف",
-            path: "/mizaniya/byan-alta3aqud",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "maktab-hesabat",
-    label: "مكتب الحسابات",
-    icon: <BsCalculator className="size-5" />,
-    isDropdown: true,
-    children: [
-      {
-        id: "hesabat-mohamat-almodir",
-        label: "مهام المدير",
-        isDropdown: false,
-        children: [],
-      },
-      {
-        id: "hesabat-mohamat-almowazaf",
-        label: "مهام الموظف",
-        isDropdown: false,
-        children: [],
-      },
-      {
-        id: "hesabat-safhat-al3amal",
-        label: "صفحات العمل",
-        isDropdown: false,
-        children: [
-          {
-            id: "hesabat-tasjil-khetabaat-daman",
-            label: "تسجيل خطابات الضمان",
-            path: "/hesabat/tasjil-khetabaat-aldaman",
-          },
-          {
-            id: "hesabat-taqarir",
-            label: "التقارير",
-            path: "/hesabat/altaqarir",
-          },
-          {
-            id: "hesabat-mutabaat-mustakhlasat",
-            label: "متابعة دخول وخروج المستخلصات",
-            path: "/hesabat/mutabaat-dukhol-wa-khurooj-almustakhlasat",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "maktab-mashtarawat",
-    label: "مكتب المشتريات",
-    icon: <FiShoppingCart className="size-5" />,
-    isDropdown: true,
-    children: [
-      {
-        id: "mashtarawat-mohamat-almodir",
-        label: "مهام المدير",
-        isDropdown: false,
-        children: [],
-        path: "/mashtarawat/mohamat-almodir",
-      },
-      {
-        id: "mashtarawat-mohamat-almowazaf",
-        label: "مهام الموظف",
-        isDropdown: false,
-        children: [],
-        path: "/mashtarawat/mohamat-almowazaf",
-      },
-      {
-        id: "mashtarawat-safhat-al3amal",
-        label: "صفحات العمل",
-        isDropdown: false,
-        children: [
-          {
-            id: "mashtarawat-byanat-almashro3at",
-            label: "بيانات المشروعات",
-            path: "/mashtarawat/byanat-almashro3at",
-          },
-          {
-            id: "mashtarawat-mahdar-fani",
-            label: "محضر اجراءات الفتح والبت الفني",
-            path: "/mashtarawat/mahdar-ejra2at-fani",
-          },
-          {
-            id: "mashtarawat-mahdar-mali",
-            label: "محضر اجراءات الفتح والبت المالي",
-            path: "/mashtarawat/mahdar-ejra2at-mali",
-          },
-        ],
-      },
-    ],
-  },
-  // ======= مكتب التوريدات (NEW) =======
-  {
-    id: "maktab-tawridat",
-    label: "مكتب التوريدات",
-    icon: <FiTruck className="size-5" />,
-    isDropdown: true,
-    children: [
-      {
-        id: "tawridat-mohamat-almodir",
-        label: "مهام المدير",
-        isDropdown: false,
-        children: [],
-        path: "/tawridat/mohamat-almodir",
-      },
-      {
-        id: "tawridat-mohamat-almowazaf",
-        label: "مهام الموظف",
-        isDropdown: false,
-        children: [],
-        path: "/tawridat/mohamat-almowazaf",
-      },
-      {
-        id: "tawridat-safhat-al3amal",
-        label: "صفحات العمل",
-        isDropdown: false,
-        children: [
-          {
-            id: "tawridat-namozhaj-dariba",
-            label: "نموذج ضريبة المبيعات - توريدات",
-            path: "/tawridat/namozhaj-dariba-mabiaat",
-          },
-          {
-            id: "tawridat-byan-awamr",
-            label: "بيان أوامر التوريد المرسلة للفرع المالي",
-            path: "/tawridat/byan-awamr-tawrid",
-          },
-          {
-            id: "tawridat-tasjil-mawqif",
-            label: "تسجيل الموقف الحالي للمشروع",
-            path: "/tawridat/tasjil-almawqif-alhali",
-          },
-          {
-            id: "tawridat-mutabaat-taqarir",
-            label: "متابعة التقارير",
-            path: "/tawridat/mutabaat-altaqarir",
-          },
-          {
-            id: "tawridat-mutabaat-taswyat",
-            label: "متابعة التسويات",
-            path: "/tawridat/mutabaat-altaswyat",
+            id: "siyana-bayan-mutawaqif",
+            label: "بيان بالمتوقف في قسم الصيانة حتى تاريخ",
+            path: "/siyana/bayan-mutawaqif",
           },
         ],
       },
