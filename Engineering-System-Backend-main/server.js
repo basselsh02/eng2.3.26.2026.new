@@ -3,7 +3,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import templateRouter from "./src/routes/template.routes.js";
+import { connectDatabase } from "./src/config/database.js";
+import apiRouter from "./src/routes/index.js";
+import { errorHandler } from "./src/middleware/error-handler.js";
+import { seedMockProjects } from "./src/seed/mock-projects.js";
 
 dotenv.config();
 
@@ -12,29 +15,44 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
+    origin: "http://localhost:5173",
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
   })
 );
 
 app.get("/", (_req, res) => {
-  res.json({ success: true, message: "Template API is running" });
+  res.json({ success: true, message: "Engineering Management System API is running" });
 });
 
-app.use("/api", templateRouter);
+app.use("/api", apiRouter);
 
 app.use("*", (_req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.use(errorHandler);
+
+const PORT = Number(process.env.PORT || 5000);
+
+const startServer = async () => {
+  await connectDatabase();
+  await seedMockProjects();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer().catch((error) => {
+  console.error("Failed to start server", error);
+  process.exit(1);
 });
