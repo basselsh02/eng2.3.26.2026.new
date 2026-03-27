@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "../../../lib/utils";
 import { BiX } from "react-icons/bi";
 
 const Modal = ({
@@ -31,10 +30,7 @@ const Modal = ({
       onClick={handleOverlayClick}
     >
       <div
-        className={cn(
-          "w-full mx-4 bg-background border border-primary-500 rounded-xl shadow-2xl overflow-hidden transition-all",
-          sizeClasses[size]
-        )}
+        className={`w-full mx-4 bg-background border border-primary-500 rounded-xl shadow-2xl overflow-hidden transition-all ${sizeClasses[size]}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-primary-400 bg-primary-500 text-primary-content-500">
