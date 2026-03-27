@@ -15,34 +15,12 @@ import IdafaShorot from "./components/pages/Nashr/IdafaShorot";
 
 // مكتب العقود pages
 import Ejra2at from "./components/pages/Oqood/Ejra2at";
-import Ejra2atMaliya from "./components/pages/Oqood/Ejra2atMaliya";
 import TasjilAlMawqifAlMali from "./components/pages/Oqood/TasjilAlMawqifAlMali";
 import ByanatAlmashro3Oqood from "./components/pages/Oqood/ByanatAlmashro3Oqood";
 import TasjilByanAlMashro3 from "./components/pages/Oqood/TasjilByanAlMashro3";
 
-// مكتب الميزانية pages
-import TasjilAlMakhsamat from "./components/pages/Mizaniya/TasjilAlMakhsamat";
-import ByanAlTa3aqud from "./components/pages/Mizaniya/ByanAlTa3aqud";
-
-// مكتب الحسابات pages
-import TasjilKhetabaatAlDaman from "./components/pages/Hesabat/TasjilKhetabaatAlDaman";
-import AlTaqarir from "./components/pages/Hesabat/AlTaqarir";
-import MutabaatDukholWaKhuroojAlMustakhlasat from "./components/pages/Hesabat/MutabaatDukholWaKhuroojAlMustakhlasat";
-
-// مكتب المشتريات pages
-import MohamatAlModirMashtarawat from "./components/pages/Mashtarawat/MohamatAlModirMashtarawat";
-import MohamatAlMowazafMashtarawat from "./components/pages/Mashtarawat/MohamatAlMowazafMashtarawat";
-import ByanatAlmashro3at from "./components/pages/Mashtarawat/ByanatAlmashro3at";
-import MahdarEjra2at, { MahdarEjra2atMali } from "./components/pages/Mashtarawat/MahdarEjra2at";
-
-// مكتب التوريدات pages
-import MohamatAlModirTawridat from "./components/pages/Tawridat/MohamatAlModirTawridat";
-import MohamatAlMowazafTawridat from "./components/pages/Tawridat/MohamatAlMowazafTawridat";
-import NamozhajDaribatAlMabiaat from "./components/pages/Tawridat/NamozhajDaribatAlMabiaat";
-import ByanAwamarTawrid from "./components/pages/Tawridat/ByanAwamarTawrid";
-import TasjilAlMawqifAlHali from "./components/pages/Tawridat/TasjilAlMawqifAlHali";
-import MutabaatAlTaqarir from "./components/pages/Tawridat/MutabaatAlTaqarir";
-import MutabaatAlTaswyat from "./components/pages/Tawridat/MutabaatAlTaswyat";
+// مكتب الصيانة pages
+import SiyanaBayan from "./components/pages/Siyana/SiyanaBayan";
 
 import store from "./app/store";
 
@@ -70,37 +48,14 @@ const router = createBrowserRouter([
 
       // مكتب العقود - مهام المدير
       { path: "oqood/ejra2at", element: <Ejra2at /> },
-      { path: "oqood/ejra2at-maliya", element: <Ejra2atMaliya /> },
       { path: "oqood/tasjil-almawqif-almali", element: <TasjilAlMawqifAlMali /> },
 
       // مكتب العقود - مهام الموظف / صفحات العمل
       { path: "oqood/byanat-almashro3", element: <ByanatAlmashro3Oqood /> },
       { path: "oqood/tasjil-byan-almashro3", element: <TasjilByanAlMashro3 /> },
 
-      // مكتب الميزانية - صفحات العمل
-      { path: "mizaniya/tasjil-almakhsamat", element: <TasjilAlMakhsamat /> },
-      { path: "mizaniya/byan-alta3aqud", element: <ByanAlTa3aqud /> },
-
-      // مكتب الحسابات - صفحات العمل
-      { path: "hesabat/tasjil-khetabaat-aldaman", element: <TasjilKhetabaatAlDaman /> },
-      { path: "hesabat/altaqarir", element: <AlTaqarir /> },
-      { path: "hesabat/mutabaat-dukhol-wa-khurooj-almustakhlasat", element: <MutabaatDukholWaKhuroojAlMustakhlasat /> },
-
-      // مكتب المشتريات
-      { path: "mashtarawat/mohamat-almodir", element: <MohamatAlModirMashtarawat /> },
-      { path: "mashtarawat/mohamat-almowazaf", element: <MohamatAlMowazafMashtarawat /> },
-      { path: "mashtarawat/byanat-almashro3at", element: <ByanatAlmashro3at /> },
-      { path: "mashtarawat/mahdar-ejra2at-fani", element: <MahdarEjra2at /> },
-      { path: "mashtarawat/mahdar-ejra2at-mali", element: <MahdarEjra2atMali /> },
-
-      // مكتب التوريدات
-      { path: "tawridat/mohamat-almodir", element: <MohamatAlModirTawridat /> },
-      { path: "tawridat/mohamat-almowazaf", element: <MohamatAlMowazafTawridat /> },
-      { path: "tawridat/namozhaj-dariba-mabiaat", element: <NamozhajDaribatAlMabiaat /> },
-      { path: "tawridat/byan-awamr-tawrid", element: <ByanAwamarTawrid /> },
-      { path: "tawridat/tasjil-almawqif-alhali", element: <TasjilAlMawqifAlHali /> },
-      { path: "tawridat/mutabaat-altaqarir", element: <MutabaatAlTaqarir /> },
-      { path: "tawridat/mutabaat-altaswyat", element: <MutabaatAlTaswyat /> },
+      // مكتب الصيانة - صفحات العمل
+      { path: "siyana/bayan-mutawaqif", element: <SiyanaBayan /> },
     ],
   },
 ]);
