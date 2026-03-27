@@ -68,12 +68,12 @@ const router = createBrowserRouter([
       { path: "nashr/istkmal-byanat", element: <IstkmalByanat /> },
       { path: "nashr/idafa-shorot", element: <IdafaShorot /> },
 
-      // مكتب العقود - مهام المدير
-      { path: "oqood/ejra2at", element: <ManagerTasks officeId="oqood" officeName="مكتب العقود" /> },
-      { path: "oqood/tasjil-almawqif-almali", element: <ManagerTasks officeId="oqood" officeName="مكتب العقود" /> },
+      // مكتب العقود - صفحات العمل
+      { path: "oqood/ejra2at", element: <Ejra2at /> },
+      { path: "oqood/tasjil-almawqif-almali", element: <TasjilAlMawqifAlMali /> },
 
-      // مكتب العقود - مهام الموظف / صفحات العمل
-      { path: "oqood/byanat-almashro3", element: <EmployeeTasks officeId="oqood" officeName="مكتب العقود" /> },
+      // مكتب العقود - صفحات العمل (متابعة)
+      { path: "oqood/byanat-almashro3", element: <ByanatAlmashro3Oqood /> },
       { path: "oqood/tasjil-byan-almashro3", element: <TasjilByanAlMashro3 /> },
 
       // مكتب الصيانة - صفحات العمل
