@@ -1,307 +1,212 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import SearchBar from "../../ui/SearchBar/SearchBar";
+import AppSelect from "../../ui/AppSelect/AppSelect";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import FormDatePicker from "../../ui/FormDatePicker/FormDatePicker";
+import TableFilterCell, { applyFilters } from "../../ui/TableFilter/TableFilterCell";
 
-const projectsData = [
-  { id: 1, raqmMashro3: "2588888", ismMashro3: "انشاء الهيكل رقم 9 ببطاقة رقم 2 بمشروع الواجهة البحرية العربية لمدينة العالمين الجديدة", taklfaMashro3: "100.000.000", kodFar3: "2546", ismFar3Monafez: "اللواء 152 انشاءات" },
-  { id: 2, raqmMashro3: "2588888", ismMashro3: "انشاء الهيكل رقم 9 ببطاقة رقم 2 بمشروع الواجهة البحرية العربية لمدينة العالمين الجديدة", taklfaMashro3: "100.000.000", kodFar3: "2546", ismFar3Monafez: "اللواء 152 انشاءات" },
+const yearOptions = [
+  { value: "2026/2025", label: "2026/2025" },
+  { value: "2025/2024", label: "2025/2024" },
+];
+const projectOptions = [
+  { value: "2588888", label: "2588888 - إنشاء الهيكل رقم 9" },
+  { value: "2590000", label: "2590000 - تطوير مرافق" },
+];
+const offerTypeOptions = [
+  { value: "أساسي", label: "عرض أساسي" },
+  { value: "بديل", label: "عرض بديل" },
+];
+const decisionOptions = [
+  { value: "مقبول", label: "مقبول" },
+  { value: "مرفوض", label: "مرفوض" },
+];
+const paperTypeOptions = [
+  { value: "مبلغ إجمالي", label: "مبلغ إجمالي" },
+  { value: "تفصيلي", label: "تفصيلي" },
 ];
 
-// Tab 1: عروض الشركات (Image 1)
-function OrdoodAlsharaket() {
-  return (
-    <div className="space-y-4" dir="rtl">
-      <div className="flex items-center gap-2 flex-wrap text-sm">
-        <label className="font-medium">الشركة</label>
-        <input defaultValue="مكتب الشرق للمقاولات" className="border border-gray-300 rounded px-2 py-1 bg-background flex-1 min-w-40" />
-        <label className="font-medium">نوع العرض</label>
-        <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-          <option>عرض اساسي</option>
-        </select>
-        <label className="font-medium">رقم العرض</label>
-        <input defaultValue="2" className="border border-gray-300 rounded px-2 py-1 bg-background w-20" />
-      </div>
-      <div className="flex items-center gap-2 flex-wrap text-sm">
-        <label className="font-medium">تاريخ العرض</label>
-        <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-          <option>2026/5/6</option>
-        </select>
-        <label className="font-medium">تاريخ نهاية العرض</label>
-        <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-          <option>2026/9/5</option>
-        </select>
-        <label className="font-medium">الترتيب المسلسل</label>
-        <input defaultValue="25" className="border border-gray-300 rounded px-2 py-1 bg-background w-20" />
-      </div>
-      <div className="flex items-start gap-2 text-sm">
-        <label className="font-medium mt-2 shrink-0">الشروط الاضافية</label>
-        <textarea className="flex-1 border border-gray-300 rounded px-2 py-1 bg-background h-24" />
-      </div>
-    </div>
-  );
-}
-
-// Tab 2: اجراءات الفتح الفني (Image 2 / Image 6)
-function Ejra2atAlFathAlFani() {
-  const committeeData = [
-    { id: 1, raqmRatba: "مقدم أج", raqm: "احمد محمود السيد", wazifa: "رئيس اللجنة", mawqi3: true, tiba3a: "طباعة نموذج 7" },
-    { id: 2, raqmRatba: "نقيب", raqm: "على احمد على", wazifa: "عضو اللجنة", mawqi3: false, tiba3a: "طباعة نموذج 8" },
-    { id: 3, raqmRatba: "مقدم", raqm: "ممدوح شاكر فتحي", wazifa: "مندوب العقود", mawqi3: true, tiba3a: "طباعة نموذج 12" },
-    { id: 4, raqmRatba: "ملازم", raqm: "عبدالله محمد احمد", wazifa: "عضو هيئة القضاء", mawqi3: false, tiba3a: "طباعة نموذج 11" },
-  ];
-
-  const companiesResult = [
-    { id: 1, mosalsal: 1, kod: "6618", sharika: "مكتب الشرق للمقاولات", naw3: "عرض اساسي", tamin: "بدون تأمين ابتدائي", tarikh: "2025/5/3", qarar: "مقبول", raqmMwafaqa: "29555", adad: "12", naw3Waraqa: "مبلغ إجمالي" },
-    { id: 2, mosalsal: 2, kod: "6619", sharika: "مكتب الشرق للمقاولات", naw3: "عرض اساسي", tamin: "بدون تأمين ابتدائي", tarikh: "2025/5/3", qarar: "مقبول", raqmMwafaqa: "29555", adad: "22", naw3Waraqa: "طابعة شاحة" },
-    { id: 3, mosalsal: 3, kod: "9555", sharika: "مكتب الشرق للمقاولات", naw3: "عرض اساسي", tamin: "بدون تأمين ابتدائي", tarikh: "2025/5/3", qarar: "مقبول", raqmMwafaqa: "29555", adad: "15", naw3Waraqa: "مبلغ إجمالي" },
-    { id: 4, mosalsal: 4, kod: "2145", sharika: "مكتب الشرق للمقاولات", naw3: "عرض اساسي", tamin: "بدون تأمين ابتدائي", tarikh: "2025/5/3", qarar: "مقبول", raqmMwafaqa: "29555", adad: "6", naw3Waraqa: "شفافة بلاك" },
-  ];
-
-  return (
-    <div className="space-y-4" dir="rtl">
-      {/* Committee table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-3 font-semibold border-l border-gray-200">الرتبة</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم العضو</th>
-              <th className="p-3 font-semibold border-l border-gray-200">الوظيفة</th>
-              <th className="p-3 font-semibold border-l border-gray-200">موقع</th>
-              <th className="p-3 font-semibold">طباعة نموذج</th>
-            </tr>
-          </thead>
-          <tbody>
-            {committeeData.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-3 border-l border-gray-100">{row.raqmRatba}</td>
-                <td className="p-3 border-l border-gray-100">{row.raqm}</td>
-                <td className="p-3 border-l border-gray-100">{row.wazifa}</td>
-                <td className="p-3 border-l border-gray-100">
-                  <input type="checkbox" checked={row.mawqi3} readOnly className="w-4 h-4 accent-primary-500" />
-                </td>
-                <td className="p-3">{row.tiba3a}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Companies result table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-2 font-semibold border-l border-gray-200">المسلسل</th>
-              <th className="p-2 font-semibold border-l border-gray-200">الكود</th>
-              <th className="p-2 font-semibold border-l border-gray-200">الشركة</th>
-              <th className="p-2 font-semibold border-l border-gray-200">نوع العرض</th>
-              <th className="p-2 font-semibold border-l border-gray-200">التأمين الابتدائي</th>
-              <th className="p-2 font-semibold border-l border-gray-200">تاريخ البث الفني</th>
-              <th className="p-2 font-semibold border-l border-gray-200">قرار اللجنة</th>
-              <th className="p-2 font-semibold border-l border-gray-200">رقم الموافقة الامنية</th>
-              <th className="p-2 font-semibold border-l border-gray-200">عدد الاوراق</th>
-              <th className="p-2 font-semibold">نوع الورقة</th>
-            </tr>
-          </thead>
-          <tbody>
-            {companiesResult.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-2 border-l border-gray-100">{row.mosalsal}</td>
-                <td className="p-2 border-l border-gray-100">{row.kod}</td>
-                <td className="p-2 border-l border-gray-100">{row.sharika}</td>
-                <td className="p-2 border-l border-gray-100">{row.naw3}</td>
-                <td className="p-2 border-l border-gray-100">{row.tamin}</td>
-                <td className="p-2 border-l border-gray-100">{row.tarikh}</td>
-                <td className="p-2 border-l border-gray-100">
-                  <select defaultValue={row.qarar} className="border border-gray-300 rounded px-1 py-0.5 text-xs bg-background">
-                    <option>مقبول</option>
-                    <option>مرفوض</option>
-                  </select>
-                </td>
-                <td className="p-2 border-l border-gray-100">{row.raqmMwafaqa}</td>
-                <td className="p-2 border-l border-gray-100">{row.adad}</td>
-                <td className="p-2">
-                  <select defaultValue={row.naw3Waraqa} className="border border-gray-300 rounded px-1 py-0.5 text-xs bg-background">
-                    <option>مبلغ إجمالي</option>
-                    <option>طابعة شاحة</option>
-                    <option>شفافة بلاك</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-// Tab 3: اجراءات البث الفني (Image 3)
-function Ejra2atAlBathAlFani() {
-  const data = [
-    { id: 1, kod: "55", wasf: "تم التعاقد بالمناقصة المحدودة", wahda: "3", kamiya: "20", sarOrd: "25555", ijmali: "100.222.222" },
-    { id: 2, kod: "4", wasf: "تم التعاقد بالمناقصة المحدودة", wahda: "3", kamiya: "15", sarOrd: "25555", ijmali: "100.222.222" },
-    { id: 3, kod: "684", wasf: "تم التعاقد بالمناقصة المحدودة", wahda: "3", kamiya: "1555", sarOrd: "25555", ijmali: "100.222.222" },
-    { id: 4, kod: "45", wasf: "تم التعاقد بالمناقصة المحدودة", wahda: "3", kamiya: "456", sarOrd: "25555", ijmali: "100.222.222" },
-    { id: 5, kod: "7877", wasf: "تم التعاقد بالمناقصة المحدودة", wahda: "3", kamiya: "887", sarOrd: "25555", ijmali: "100.222.222" },
-    { id: 6, kod: "222", wasf: "تم التعاقد بالمناقصة المحدودة", wahda: "3", kamiya: "544", sarOrd: "25555", ijmali: "100.222.222" },
-  ];
-
-  return (
-    <div className="space-y-4" dir="rtl">
-      {/* Header info */}
-      <div className="flex items-center gap-4 flex-wrap text-sm border border-gray-200 rounded p-3 bg-base">
-        <div className="flex items-center gap-2">
-          <label className="font-medium">الشركة</label>
-          <input defaultValue="مكتب الشرق للمقاولات" className="border border-gray-300 rounded px-2 py-1 bg-background" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">نوع العرض</label>
-          <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-            <option>عرض اساسي</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">رقم العرض</label>
-          <input defaultValue="50" className="border border-gray-300 rounded px-2 py-1 bg-background w-20" />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">تاريخ العرض</label>
-          <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-            <option>2025/8/10</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">تاريخ نهاية العرض</label>
-          <select className="border border-gray-300 rounded px-2 py-1 bg-background">
-            <option>2025/12/8</option>
-          </select>
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="font-medium">الترتيب المسلسل</label>
-          <input defaultValue="202" className="border border-gray-300 rounded px-2 py-1 bg-background w-20" />
-        </div>
-      </div>
-
-      {/* Items table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-2 font-semibold border-l border-gray-200">كود الصنف</th>
-              <th className="p-2 font-semibold border-l border-gray-200">اسم الصنف</th>
-              <th className="p-2 font-semibold border-l border-gray-200">الوحدة</th>
-              <th className="p-2 font-semibold border-l border-gray-200">الكمية</th>
-              <th className="p-2 font-semibold border-l border-gray-200">سعر الوحدة</th>
-              <th className="p-2 font-semibold">الاجمالي</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-2 border-l border-gray-100">{row.kod}</td>
-                <td className="p-2 border-l border-gray-100">{row.wasf}</td>
-                <td className="p-2 border-l border-gray-100">{row.wahda}</td>
-                <td className="p-2 border-l border-gray-100">{row.kamiya}</td>
-                <td className="p-2 border-l border-gray-100">{row.sarOrd}</td>
-                <td className="p-2">{row.ijmali}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
+const companyOptions = [
+  { value: "شركة المقاولون العرب", label: "شركة المقاولون العرب" },
+  { value: "أطلس للمقاولات", label: "أطلس للمقاولات" },
+  { value: "كيان للمقاولات", label: "كيان للمقاولات" },
+];
 
 export default function Ejra2at() {
-  const [activeTab, setActiveTab] = useState("عروض الشركات");
-  const [searchVal, setSearchVal] = useState("");
-  const [kodMashro3] = useState("4585551456");
-  const [amMali] = useState("2026/2025");
+  const [year, setYear] = useState(yearOptions[0]);
+  const [project, setProject] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [rankNames, setRankNames] = useState({ a: "الرتبة A", b: "الرتبة B", c: "الرتبة C" });
+  const [filters, setFilters] = useState({ tarikh: "", qarar: "", adadAwraq: "", naw3Waraqa: "" });
 
-  const tabs = ["عروض الشركات", "اجراءات الفتح الفني", "اجراءات البث الفني"];
+  const { control, register } = useForm({
+    defaultValues: {
+      offers: [
+        {
+          company: companyOptions[0],
+          offerType: offerTypeOptions[0],
+          offerNo: "1",
+          offerDate: new Date(),
+          expiryDate: new Date(),
+          serialOrder: "1",
+          extraConditions: "",
+        },
+      ],
+    },
+  });
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "عروض الشركات": return <OrdoodAlsharaket />;
-      case "اجراءات الفتح الفني": return <Ejra2atAlFathAlFani />;
-      case "اجراءات البث الفني": return <Ejra2atAlBathAlFani />;
-      default: return null;
-    }
-  };
+  const { fields: offers, append: appendOffer } = useFieldArray({ control, name: "offers" });
+
+  const [bottomRows, setBottomRows] = useState([
+    { id: 1, tarikh: "2026/03/20", qarar: "مقبول", securityApproval: "مؤمن", adadAwraq: "12", naw3Waraqa: "مبلغ إجمالي" },
+    { id: 2, tarikh: "2026/03/21", qarar: "مرفوض", securityApproval: "غير مؤمن", adadAwraq: "8", naw3Waraqa: "تفصيلي" },
+  ]);
+
+  const filteredBottomRows = useMemo(() => {
+    const base = applyFilters(bottomRows, filters);
+    if (!searchText) return base;
+    return base.filter((row) => Object.values(row).some((v) => String(v).toLowerCase().includes(searchText.toLowerCase())));
+  }, [bottomRows, filters, searchText]);
+
+  const rankTable = useMemo(() => {
+    return [
+      { rank: rankNames.a, company: "شركة المقاولون العرب", score: "95" },
+      { rank: rankNames.b, company: "أطلس للمقاولات", score: "89" },
+      { rank: rankNames.c, company: "كيان للمقاولات", score: "84" },
+    ];
+  }, [rankNames]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex flex-col gap-2">
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">TRDD_UF</span>
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">20252028</span>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 items-end border border-gray-200 rounded p-3 bg-base">
+        <div className="lg:col-span-2">
+          <SearchBar
+            fields={[{ value: "all", label: "كل الحقول" }, { value: "tarikh", label: "التاريخ" }, { value: "qarar", label: "قرار اللجنة" }]}
+            onSearch={(value) => setSearchText(value)}
+            placeholder="ابحث عن مشروع/عرض"
+          />
         </div>
-        <div className="flex-1 flex justify-center">
-          <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">الاجراءات</h1>
-        </div>
-        <div className="flex flex-col gap-2">
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">قسم العقود</button>
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">اجراثات التعاقد /قسم العقود</button>
-        </div>
+        <AppSelect label="العام المالي" options={yearOptions} value={year} onChange={setYear} isCreatable={false} />
+        <AppSelect label="المشروع" options={projectOptions} value={project} onChange={setProject} isCreatable={false} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
-        <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
-        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
-      </div>
+      {project && (
+        <>
+          <div className="space-y-3 border border-gray-200 rounded bg-base p-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold">عروض الشركات</h3>
+              <Button size="sm" onClick={() => appendOffer({ company: null, offerType: offerTypeOptions[0], offerNo: "", offerDate: null, expiryDate: null, serialOrder: String(offers.length + 1), extraConditions: "" })}>إضافة شركة</Button>
+            </div>
 
-      {/* Projects Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-3 font-semibold border-l border-gray-200">كود المشروع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم المشروع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تكلفة المشروع</th>
-              <th className="p-3 font-semibold border-l border-gray-200">كود الفرع</th>
-              <th className="p-3 font-semibold">اسم الفرع المنفذ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projectsData.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}>
-                <td className="p-3 border-l border-gray-100">{row.raqmMashro3}</td>
-                <td className="p-3 border-l border-gray-100 max-w-xs">{row.ismMashro3}</td>
-                <td className="p-3 border-l border-gray-100">{row.taklfaMashro3}</td>
-                <td className="p-3 border-l border-gray-100">{row.kodFar3}</td>
-                <td className="p-3">{row.ismFar3Monafez}</td>
-              </tr>
+            {offers.map((offer, index) => (
+              <div key={offer.id} className="border border-gray-100 rounded p-3 space-y-3 bg-gray-50/40">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <AppSelect label="الشركة" options={companyOptions} isCreatable={false} />
+                  <AppSelect label="نوع العرض" options={offerTypeOptions} isCreatable={false} />
+                  <Input label="رقم العرض" {...register(`offers.${index}.offerNo`)} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <FormDatePicker control={control} name={`offers.${index}.offerDate`} label="تاريخ العرض" />
+                  <FormDatePicker control={control} name={`offers.${index}.expiryDate`} label="تاريخ انتهاء العرض" />
+                  <Input label="الترتيب المسلسل" {...register(`offers.${index}.serialOrder`)} />
+                </div>
+                <div>
+                  <label className="block mb-1 text-sm text-gray-600">شروط إضافية</label>
+                  <textarea className="w-full border border-gray-300 rounded px-3 py-2 bg-background min-h-20" {...register(`offers.${index}.extraConditions`)} />
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
 
-      {/* Tabs */}
-      <div className="flex gap-4 border-b border-gray-200 pb-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-              activeTab === tab
-                ? "text-primary-600 border-b-2 border-primary-600 -mb-1 font-bold"
-                : "text-gray-500 hover:text-primary-500"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+          <div className="border border-gray-200 rounded bg-base p-3 space-y-3">
+            <h3 className="font-bold">إعدادات الرتب</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Input label="الرتبة الأولى" value={rankNames.a} onChange={(e) => setRankNames((p) => ({ ...p, a: e.target.value }))} />
+              <Input label="الرتبة الثانية" value={rankNames.b} onChange={(e) => setRankNames((p) => ({ ...p, b: e.target.value }))} />
+              <Input label="الرتبة الثالثة" value={rankNames.c} onChange={(e) => setRankNames((p) => ({ ...p, c: e.target.value }))} />
+            </div>
 
-      {/* Tab Content */}
-      <div className="bg-base rounded border border-gray-100 p-4">
-        {renderTabContent()}
-      </div>
+            <table className="w-full text-sm text-right border border-gray-100 rounded overflow-hidden">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="p-2 border-l border-gray-200">الرتبة</th>
+                  <th className="p-2 border-l border-gray-200">الشركة</th>
+                  <th className="p-2">التقييم الفني</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rankTable.map((row, idx) => (
+                  <tr key={row.rank} className={idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"}>
+                    <td className="p-2 border-l border-gray-100">{row.rank}</td>
+                    <td className="p-2 border-l border-gray-100">{row.company}</td>
+                    <td className="p-2">{row.score}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="flex justify-start gap-2">
+              <Button variant="warning">طباعة نموذج 7</Button>
+              <Button variant="warning">طباعة نموذج 8</Button>
+            </div>
+          </div>
+
+          <div className="border border-gray-200 rounded bg-base p-3">
+            <h3 className="font-bold mb-3">نتيجة الشركات - الفتح الفني</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-right">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="p-2 border-l border-gray-200">التاريخ</th>
+                    <th className="p-2 border-l border-gray-200">قرار اللجنة</th>
+                    <th className="p-2 border-l border-gray-200">الموافقة الأمنية</th>
+                    <th className="p-2 border-l border-gray-200">عدد الأوراق</th>
+                    <th className="p-2">نوع الورقة</th>
+                  </tr>
+                  <tr className="border-b border-gray-200 bg-base align-top">
+                    <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.tarikh} onChange={(v) => setFilters((p) => ({ ...p, tarikh: v }))} placeholder="فلتر" /></th>
+                    <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.qarar} onChange={(v) => setFilters((p) => ({ ...p, qarar: v }))} placeholder="فلتر" /></th>
+                    <th className="p-2 border-l border-gray-100" />
+                    <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.adadAwraq} onChange={(v) => setFilters((p) => ({ ...p, adadAwraq: v }))} placeholder="فلتر" /></th>
+                    <th className="p-2"><TableFilterCell value={filters.naw3Waraqa} onChange={(v) => setFilters((p) => ({ ...p, naw3Waraqa: v }))} placeholder="فلتر" /></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredBottomRows.map((row, idx) => (
+                    <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"}`}>
+                      <td className="p-2 border-l border-gray-100">{row.tarikh}</td>
+                      <td className="p-2 border-l border-gray-100 min-w-40">
+                        <AppSelect
+                          label="قرار اللجنة"
+                          options={decisionOptions}
+                          isCreatable={false}
+                          value={decisionOptions.find((op) => op.value === row.qarar)}
+                          onChange={(option) => setBottomRows((prev) => prev.map((r) => r.id === row.id ? { ...r, qarar: option?.value || "" } : r))}
+                        />
+                      </td>
+                      <td className="p-2 border-l border-gray-100">{row.securityApproval}</td>
+                      <td className="p-2 border-l border-gray-100">
+                        <Input showLabel={false} label="أوراق" value={row.adadAwraq} onChange={(e) => setBottomRows((prev) => prev.map((r) => r.id === row.id ? { ...r, adadAwraq: e.target.value } : r))} />
+                      </td>
+                      <td className="p-2 min-w-44">
+                        <AppSelect
+                          label="نوع الورقة"
+                          options={paperTypeOptions}
+                          isCreatable={false}
+                          value={paperTypeOptions.find((op) => op.value === row.naw3Waraqa)}
+                          onChange={(option) => setBottomRows((prev) => prev.map((r) => r.id === row.id ? { ...r, naw3Waraqa: option?.value || "" } : r))}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
