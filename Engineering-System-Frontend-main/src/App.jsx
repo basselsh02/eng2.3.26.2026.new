@@ -35,6 +35,15 @@ import MohamatAlMowazafMashtarawat from "./components/pages/Mashtarawat/MohamatA
 import ByanatAlmashro3at from "./components/pages/Mashtarawat/ByanatAlmashro3at";
 import MahdarEjra2at, { MahdarEjra2atMali } from "./components/pages/Mashtarawat/MahdarEjra2at";
 
+// مكتب التوريدات pages
+import MohamatAlModirTawridat from "./components/pages/Tawridat/MohamatAlModirTawridat";
+import MohamatAlMowazafTawridat from "./components/pages/Tawridat/MohamatAlMowazafTawridat";
+import NamozhajDaribatAlMabiaat from "./components/pages/Tawridat/NamozhajDaribatAlMabiaat";
+import ByanAwamarTawrid from "./components/pages/Tawridat/ByanAwamarTawrid";
+import TasjilAlMawqifAlHali from "./components/pages/Tawridat/TasjilAlMawqifAlHali";
+import MutabaatAlTaqarir from "./components/pages/Tawridat/MutabaatAlTaqarir";
+import MutabaatAlTaswyat from "./components/pages/Tawridat/MutabaatAlTaswyat";
+
 import store from "./app/store";
 
 const router = createBrowserRouter([
@@ -83,6 +92,15 @@ const router = createBrowserRouter([
       { path: "mashtarawat/byanat-almashro3at", element: <ByanatAlmashro3at /> },
       { path: "mashtarawat/mahdar-ejra2at-fani", element: <MahdarEjra2at /> },
       { path: "mashtarawat/mahdar-ejra2at-mali", element: <MahdarEjra2atMali /> },
+
+      // مكتب التوريدات
+      { path: "tawridat/mohamat-almodir", element: <MohamatAlModirTawridat /> },
+      { path: "tawridat/mohamat-almowazaf", element: <MohamatAlMowazafTawridat /> },
+      { path: "tawridat/namozhaj-dariba-mabiaat", element: <NamozhajDaribatAlMabiaat /> },
+      { path: "tawridat/byan-awamr-tawrid", element: <ByanAwamarTawrid /> },
+      { path: "tawridat/tasjil-almawqif-alhali", element: <TasjilAlMawqifAlHali /> },
+      { path: "tawridat/mutabaat-altaqarir", element: <MutabaatAlTaqarir /> },
+      { path: "tawridat/mutabaat-altaswyat", element: <MutabaatAlTaswyat /> },
     ],
   },
 ]);

@@ -4,7 +4,7 @@ import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { TbReportMoney } from "react-icons/tb";
 import { BsCalculator } from "react-icons/bs";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart, FiTruck } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -243,6 +243,61 @@ const menu = [
             id: "mashtarawat-mahdar-mali",
             label: "محضر اجراءات الفتح والبت المالي",
             path: "/mashtarawat/mahdar-ejra2at-mali",
+          },
+        ],
+      },
+    ],
+  },
+  // ======= مكتب التوريدات (NEW) =======
+  {
+    id: "maktab-tawridat",
+    label: "مكتب التوريدات",
+    icon: <FiTruck className="size-5" />,
+    isDropdown: true,
+    children: [
+      {
+        id: "tawridat-mohamat-almodir",
+        label: "مهام المدير",
+        isDropdown: false,
+        children: [],
+        path: "/tawridat/mohamat-almodir",
+      },
+      {
+        id: "tawridat-mohamat-almowazaf",
+        label: "مهام الموظف",
+        isDropdown: false,
+        children: [],
+        path: "/tawridat/mohamat-almowazaf",
+      },
+      {
+        id: "tawridat-safhat-al3amal",
+        label: "صفحات العمل",
+        isDropdown: false,
+        children: [
+          {
+            id: "tawridat-namozhaj-dariba",
+            label: "نموذج ضريبة المبيعات - توريدات",
+            path: "/tawridat/namozhaj-dariba-mabiaat",
+          },
+          {
+            id: "tawridat-byan-awamr",
+            label: "بيان أوامر التوريد المرسلة للفرع المالي",
+            path: "/tawridat/byan-awamr-tawrid",
+          },
+          {
+            id: "tawridat-tasjil-mawqif",
+            label: "تسجيل الموقف الحالي للمشروع",
+            path: "/tawridat/tasjil-almawqif-alhali",
+          },
+          {
+            id: "tawridat-mutabaat-taqarir",
+            label: "متابعة التقارير",
+            path: "/tawridat/mutabaat-altaqarir",
+          },
+          {
+            id: "tawridat-mutabaat-taswyat",
+            label: "متابعة التسويات",
+            path: "/tawridat/mutabaat-altaswyat",
           },
         ],
       },
