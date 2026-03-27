@@ -1,189 +1,93 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import SearchBar from "../../ui/SearchBar/SearchBar";
+import AppSelect from "../../ui/AppSelect/AppSelect";
+import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import TableFilterCell, { applyFilters } from "../../ui/TableFilter/TableFilterCell";
 
-const eventsData = [
-  { id: 1, kod: "5452", wasf: "تم التعاقد بالمناقصة المحدودة", tarikh: "2024/3/25", far3: "152", kodUser: "25555", ismUser: "المقاولون", molahazat: "تم التسليم" },
-  { id: 2, kod: "", wasf: "", tarikh: "", far3: "", kodUser: "", ismUser: "", molahazat: "" },
-  { id: 3, kod: "", wasf: "", tarikh: "", far3: "", kodUser: "", ismUser: "", molahazat: "" },
+const yearOptions = [
+  { value: "2026/2025", label: "2026/2025" },
+  { value: "2025/2024", label: "2025/2024" },
 ];
 
 export default function TasjilAlMawqifAlMali() {
-  const [searchVal, setSearchVal] = useState("");
-  const [kodMashro3] = useState("4585551456");
-  const [amMali] = useState("2025/2024");
+  const [year, setYear] = useState(yearOptions[0]);
+  const [searchText, setSearchText] = useState("");
+  const [filters, setFilters] = useState({ kod: "", wasf: "" });
+  const [rows, setRows] = useState([
+    { id: 1, kod: "E-001", wasf: "فتح المظاريف الفنية" },
+    { id: 2, kod: "E-002", wasf: "إحالة إلى اللجنة المالية" },
+  ]);
+
+  const filteredRows = useMemo(() => {
+    const base = applyFilters(rows, filters);
+    if (!searchText) return base;
+    return base.filter((row) => Object.values(row).some((v) => String(v).toLowerCase().includes(searchText.toLowerCase())));
+  }, [rows, filters, searchText]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex flex-col gap-2">
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">TRDD_UF</span>
-          <span className="border border-gray-300 rounded px-3 py-1 text-sm bg-base">20252028</span>
-        </div>
-        <div className="flex-1 flex justify-center">
-          <h1 className="text-xl font-bold bg-primary-500 text-white px-8 py-2 rounded">تسجيل الموقف المالي للمشروعات</h1>
-        </div>
-        <div className="flex flex-col gap-2">
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">قسم العقود</button>
-          <button className="border border-gray-300 rounded px-3 py-1 text-sm bg-base hover:bg-primary-50">اجراثات التعاقد /قسم العقود</button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border border-gray-200 rounded p-3 bg-base">
-        <Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly />
-        <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
-        <Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} />
-      </div>
-
-      {/* Main Form */}
-      <div className="bg-base border border-gray-200 rounded p-4 space-y-3" dir="rtl">
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">رقم المشروع</label>
-            <input defaultValue="4585551456" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">نوع المشروع</label>
-            <input defaultValue="اعمال المباني" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">العام المالي</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2025/2024</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm">
-          <label className="font-medium w-40 shrink-0 text-right">وصف المشروع</label>
-          <input
-            defaultValue="اعمال انشاء الهيكل الخرساني رقم 2 بمشروع 800 مدان المرحلة الثانية من محور 9 طوابي الى محور 13 طوابي"
-            className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background"
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 items-end border border-gray-200 rounded p-3 bg-base">
+        <div className="lg:col-span-3">
+          <SearchBar
+            placeholder="بحث في الأحداث المالية"
+            fields={[
+              { value: "kod", label: "الكود" },
+              { value: "wasf", label: "وصف الحدث" },
+            ]}
+            onSearch={(value) => setSearchText(value)}
           />
         </div>
-
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">تاريخ البداية</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>4585551456</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">تاريخ النهاية</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2020/2/8</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">تاريخ ورود الكارت</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2020/2/8</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">تاريخ البث الفني</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2020/2/15</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">تاريخ البث المالي</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2025/8/10</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">التكلفة التقديرية</label>
-            <input defaultValue="200.000.000" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">قيمة الارتباط</label>
-            <input defaultValue="100.000.000" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">قيمة الصرف</label>
-            <input defaultValue="100.500.000" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">الفرع المسؤل</label>
-            <input defaultValue="اللواء 152 انشاءات" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">اسم الموظف</label>
-            <input defaultValue="محمد على" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2 col-span-2">
-            <label className="font-medium w-40 shrink-0 text-right">الجهة المستفيدة</label>
-            <input defaultValue="اللواء 152 انشاءات" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2 col-span-2">
-            <label className="font-medium w-40 shrink-0 text-right">اسم الشركة</label>
-            <input defaultValue="شاكر للمقاولات العامة والموردات" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">تاريخ الفتح الفعلي</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>2025/10/2</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">البواية</label>
-            <input defaultValue="162" className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">الموظف المسؤل</label>
-            <select className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background">
-              <option>الاستاذة/مي</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">الحرف</label>
-            <input className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">بند الخصم</label>
-            <input className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="font-medium w-40 shrink-0 text-right">اخر موقف</label>
-            <input className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-          <div className="flex items-center gap-2 col-span-2">
-            <label className="font-medium w-40 shrink-0 text-right">ملاحظات</label>
-            <input className="flex-1 border border-gray-300 rounded px-2 py-1.5 bg-background" />
-          </div>
-        </div>
+        <AppSelect label="العام المالي" options={yearOptions} value={year} onChange={setYear} isCreatable={false} />
       </div>
 
-      {/* Events History Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded bg-base">
-        <table className="w-full text-sm text-right">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="p-3 font-semibold border-l border-gray-200">الكود</th>
-              <th className="p-3 font-semibold border-l border-gray-200">وصف الحدث</th>
-              <th className="p-3 font-semibold border-l border-gray-200">تاريخ الحدث</th>
-              <th className="p-3 font-semibold border-l border-gray-200">الفرع/المكتب /القسم المسؤل</th>
-              <th className="p-3 font-semibold border-l border-gray-200">الكود</th>
-              <th className="p-3 font-semibold border-l border-gray-200">اسم المستخدم</th>
-              <th className="p-3 font-semibold">ملاحظات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {eventsData.map((row, idx) => (
-              <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`} style={{ height: "40px" }}>
-                <td className="p-3 border-l border-gray-100">{row.kod}</td>
-                <td className="p-3 border-l border-gray-100">{row.wasf}</td>
-                <td className="p-3 border-l border-gray-100">{row.tarikh}</td>
-                <td className="p-3 border-l border-gray-100">{row.far3}</td>
-                <td className="p-3 border-l border-gray-100">{row.kodUser}</td>
-                <td className="p-3 border-l border-gray-100">{row.ismUser}</td>
-                <td className="p-3">{row.molahazat}</td>
+      <div className="border border-gray-200 rounded bg-base p-3 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold">تسجيل الموقف المالي</h3>
+          <Button
+            size="sm"
+            onClick={() => setRows((prev) => [...prev, { id: Date.now(), kod: `E-${String(prev.length + 1).padStart(3, "0")}`, wasf: "" }])}
+          >
+            إضافة صف
+          </Button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-right">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="p-3 font-semibold border-l border-gray-200">الكود</th>
+                <th className="p-3 font-semibold">وصف الحدث</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              <tr className="border-b border-gray-200 bg-base align-top">
+                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kod} onChange={(v) => setFilters((p) => ({ ...p, kod: v }))} placeholder="فلتر الكود" /></th>
+                <th className="p-2"><TableFilterCell value={filters.wasf} onChange={(v) => setFilters((p) => ({ ...p, wasf: v }))} placeholder="فلتر الوصف" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRows.map((row, idx) => (
+                <tr key={row.id} className={`border-b border-gray-100 ${idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"}`}>
+                  <td className="p-2 border-l border-gray-100 min-w-44">
+                    <Input
+                      showLabel={false}
+                      label="الكود"
+                      value={row.kod}
+                      onChange={(e) => setRows((prev) => prev.map((r) => r.id === row.id ? { ...r, kod: e.target.value } : r))}
+                    />
+                  </td>
+                  <td className="p-2 min-w-96">
+                    <Input
+                      showLabel={false}
+                      label="الوصف"
+                      value={row.wasf}
+                      onChange={(e) => setRows((prev) => prev.map((r) => r.id === row.id ? { ...r, wasf: e.target.value } : r))}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
