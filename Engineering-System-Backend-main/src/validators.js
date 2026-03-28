@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { OFFICE_ENUM, PROJECT_STATUS, PROJECT_TYPE } from "./constants/offices.js";
+import { OFFICE_REQUIRED_ROLES, USER_ROLES } from "./models/user.model.js";
 
 export const paginationQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -28,6 +29,32 @@ export const createTaskSchema = z.object({
   status: z.enum(["pending", "completed"]).optional(),
   metadata: z.record(z.any()).optional(),
 });
+
+
+
+export const createUserSchema = z
+  .object({
+    arabicName: z.string().min(2),
+    englishName: z.string().min(2),
+    password: z.string().min(8),
+    role: z.enum(USER_ROLES),
+    officeAssignedTo: z.enum(OFFICE_ENUM).nullable().optional(),
+  })
+  .superRefine((value, ctx) => {
+    const officeValue = value.officeAssignedTo ?? null;
+
+    if (OFFICE_REQUIRED_ROLES.includes(value.role) && !officeValue) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["officeAssignedTo"],
+        message: "officeAssignedTo is required for موظف and رئيس القسم",
+      });
+    }
+  })
+  .transform((value) => ({
+    ...value,
+    officeAssignedTo: OFFICE_REQUIRED_ROLES.includes(value.role) ? value.officeAssignedTo ?? null : null,
+  }));
 
 export const assignTaskSchema = z.object({
   assignedTo: z.string().min(1),

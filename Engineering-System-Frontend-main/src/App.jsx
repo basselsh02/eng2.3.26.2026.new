@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainLayout from "./components/layouts/MainLayout/MainLayout";
 import Forbidden from "./components/pages/Forbidden/Forbidden";
 import TemplateHome from "./components/pages/TemplateHome/TemplateHome";
+import UsersManagement from "./components/pages/Users/UsersManagement";
 
 // مكتب النشر pages
 import Tahsilat from "./components/pages/Nashr/Tahsilat";
@@ -103,6 +104,7 @@ const router = createBrowserRouter([
       { path: "hesabat/mutabaat-dukhol-khurooj-almustakhlasat", element: <MutabaatDukholWaKhuroojAlMustakhlasat /> },
       { path: "hesabat/altaqarir", element: <AlTaqarir /> },
       { path: "assign-task/:officeId/:taskId", element: <AssignTask /> },
+      { path: "users", element: <UsersManagement /> },
     ],
   },
 ]);

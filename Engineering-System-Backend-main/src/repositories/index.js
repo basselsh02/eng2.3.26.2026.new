@@ -1,6 +1,7 @@
 import { BaseRepository } from "./base.repository.js";
 import { Project } from "../models/project.model.js";
 import { Task } from "../models/task.model.js";
+import { User } from "../models/user.model.js";
 import {
   Nashr,
   Oqood,
@@ -14,6 +15,7 @@ import {
 export const repositories = {
   Project: new BaseRepository(Project),
   Task: new BaseRepository(Task),
+  User: new BaseRepository(User),
   Nashr: new BaseRepository(Nashr),
   Oqood: new BaseRepository(Oqood),
   Siyana: new BaseRepository(Siyana),

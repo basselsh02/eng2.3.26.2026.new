@@ -7,6 +7,7 @@ import { connectDatabase } from "./src/config/database.js";
 import apiRouter from "./src/routes/index.js";
 import { errorHandler } from "./src/middleware/error-handler.js";
 import { seedMockProjects } from "./src/seed/mock-projects.js";
+import { seedSuperAdmin } from "./src/seed/superadmin.seed.js";
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ const PORT = Number(process.env.PORT || 5000);
 const startServer = async () => {
   await connectDatabase();
   await seedMockProjects();
+  await seedSuperAdmin();
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
