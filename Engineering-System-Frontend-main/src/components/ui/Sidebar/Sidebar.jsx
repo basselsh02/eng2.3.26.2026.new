@@ -4,7 +4,7 @@ import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { MdOutlineBuild } from "react-icons/md";
 import { BsBoxes } from "react-icons/bs";
-import { FaBalanceScale } from "react-icons/fa";
+import { FaBalanceScale, FaUsersCog } from "react-icons/fa";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { RiFundsLine } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
@@ -22,6 +22,12 @@ const menu = [
     label: "Forbidden",
     icon: <BiShieldAlt2 className="size-5" />,
     path: "/forbidden",
+  },
+  {
+    id: "users-management",
+    label: "إدارة المستخدمين",
+    icon: <FaUsersCog className="size-5" />,
+    path: "/users",
   },
   {
     id: "maktab-nashr",

@@ -10,6 +10,7 @@ import tawridatRouter from "./tawridat.routes.js";
 import mashtarawatRouter from "./mashtarawat.routes.js";
 import mizaniyaRouter from "./mizaniya.routes.js";
 import hesabatRouter from "./hesabat.routes.js";
+import usersRouter from "./users.routes.js";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use("/tawridat", tawridatRouter);
 router.use("/mashtarawat", mashtarawatRouter);
 router.use("/mizaniya", mizaniyaRouter);
 router.use("/hesabat", hesabatRouter);
+router.use("/users", usersRouter);
 
 export default router;
