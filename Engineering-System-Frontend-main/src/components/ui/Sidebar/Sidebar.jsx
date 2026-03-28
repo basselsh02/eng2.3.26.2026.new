@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { BiHome, BiShieldAlt2, BiChevronDown, BiChevronUp, BiKey } from "react-icons/bi";
 import { MdOutlinePublish } from "react-icons/md";
 import { PiFilesLight } from "react-icons/pi";
 import { MdOutlineBuild } from "react-icons/md";
@@ -28,6 +28,12 @@ const menu = [
     label: "إدارة المستخدمين",
     icon: <FaUsersCog className="size-5" />,
     path: "/users",
+  },
+  {
+    id: "permissions-management",
+    label: "إدارة الصلاحيات",
+    icon: <BiKey className="size-5" />,
+    path: "/permissions",
   },
   {
     id: "maktab-nashr",
