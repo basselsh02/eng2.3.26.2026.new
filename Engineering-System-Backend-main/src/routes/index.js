@@ -11,6 +11,7 @@ import mashtarawatRouter from "./mashtarawat.routes.js";
 import mizaniyaRouter from "./mizaniya.routes.js";
 import hesabatRouter from "./hesabat.routes.js";
 import usersRouter from "./users.routes.js";
+import permissionsRouter from "./permissions.routes.js";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/mashtarawat", mashtarawatRouter);
 router.use("/mizaniya", mizaniyaRouter);
 router.use("/hesabat", hesabatRouter);
 router.use("/users", usersRouter);
+router.use("/permissions", permissionsRouter);
 
 export default router;

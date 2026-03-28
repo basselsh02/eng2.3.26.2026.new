@@ -34,7 +34,7 @@ export class BaseRepository {
     };
   }
 
-  async updateOne(filter, payload) {
-    return this.model.findOneAndUpdate(filter, payload, { new: true, runValidators: true });
+  async updateOne(filter, payload, options = {}) {
+    return this.model.findOneAndUpdate(filter, payload, { new: true, runValidators: true, ...options });
   }
 }
