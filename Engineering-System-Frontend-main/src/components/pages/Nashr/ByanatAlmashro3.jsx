@@ -474,14 +474,17 @@ function BunodSection({ bunodData, projectCode }) {
               </tr>
             ))}
           </tbody>
+          <tfoot>
+            <tr className="bg-gray-50 font-semibold">
+              <td className="p-3 border-l border-gray-100" colSpan={3}>اجمالي الاعمال</td>
+              <td className="p-3 border-l border-gray-100 text-center">{totals.wahda}</td>
+              <td className="p-3 border-l border-gray-100 text-center">{totals.kamiya}</td>
+              <td className="p-3 border-l border-gray-100 text-center">{totals.qima}</td>
+              <td className="p-3 border-l border-gray-100 text-center bg-primary-500 text-white">{totals.ijmali}</td>
+              <td className="p-3" />
+            </tr>
+          </tfoot>
         </table>
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium">اجمالي الاعمال</span>
-        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-base font-semibold min-w-[120px] text-center">{totals.wahda}</span>
-        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-base font-semibold min-w-[120px] text-center">{totals.kamiya}</span>
-        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-base font-semibold min-w-[120px] text-center">{totals.qima}</span>
-        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-primary-500 text-white font-semibold min-w-[120px] text-center">{totals.ijmali}</span>
       </div>
       <div className="flex items-center gap-2">
         <Button size="sm" variant="primary" onClick={addRow}>إضافة</Button>
