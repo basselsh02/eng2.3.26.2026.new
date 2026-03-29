@@ -20,7 +20,7 @@ const toPayload = (record) => ({
 export const getNashrFullData = async (req, res, next) => {
   try {
     const { projectCode } = req.query;
-    const query = projectCode ? { projectCode } : {};
+    const query = projectCode ? { projectCode, status: { $ne: "deleted" } } : { status: { $ne: "deleted" } };
 
     const { items } = await repo.find(query, { page: 1, pageSize: 500, sort: { createdAt: -1 } });
 
@@ -70,5 +70,23 @@ export const getNashrFullData = async (req, res, next) => {
     res.json({ success: true, data: grouped });
   } catch (error) {
     next(error);
+  }
+};
+
+export const softDeleteNominatedCompany = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updated = await repo.updateOne(
+      { _id: id, subtype: "nominated-company" },
+      { status: "deleted" },
+    );
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "السجل غير موجود" });
+    }
+
+    return res.json({ success: true, data: { id: String(updated._id), status: updated.status } });
+  } catch (error) {
+    return next(error);
   }
 };

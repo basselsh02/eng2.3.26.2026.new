@@ -3,7 +3,12 @@ import { Filter } from "lucide-react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import AppSelect from "../../ui/AppSelect/AppSelect";
-import { createNashrProjectRecord, getNashrFullData, getNashrRecords } from "../../../api/nashr";
+import {
+  createNashrProjectRecord,
+  getNashrFullData,
+  getNashrRecords,
+  softDeleteNashrNominatedCompany,
+} from "../../../api/nashr";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
 
@@ -222,78 +227,108 @@ function ShorotSection({ shorotData }) {
 
 function TarshihSection({ companiesData }) {
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
-  const [filtersLeft, setFiltersLeft] = useState({ sharika: "" });
   const companyOptions = companiesData.map((company) => ({ value: company.sharika, label: company.sharika }));
   const [filtersRight, setFiltersRight] = useState({ sharika: "", raqmSijl: "", raqmMwafaqa: "" });
+  const [openFilter, setOpenFilter] = useState(null);
+  const [companies, setCompanies] = useState(companiesData);
 
-  const leftRows = useMemo(() => applyFilters(companiesData, filtersLeft), [companiesData, filtersLeft]);
-  const rightRows = useMemo(() => applyFilters(companiesData, filtersRight), [companiesData, filtersRight]);
+  useEffect(() => {
+    setCompanies(companiesData);
+  }, [companiesData]);
+
+  const rightRows = useMemo(() => applyFilters(companies, filtersRight), [companies, filtersRight]);
+
+  const renderFilterDropdown = (key, placeholder) => (
+    <div className="relative inline-flex">
+      <button
+        type="button"
+        className="rounded p-1 text-primary-600 hover:bg-primary-50"
+        onClick={() => setOpenFilter((prev) => prev === key ? null : key)}
+        aria-label={`فلتر ${placeholder}`}
+      >
+        <Filter size={14} />
+      </button>
+      {openFilter === key && (
+        <div className="absolute top-7 right-0 z-20 min-w-44 rounded border border-gray-200 bg-base p-2 shadow-lg">
+          <input
+            value={filtersRight[key]}
+            onChange={(event) => setFiltersRight((prev) => ({ ...prev, [key]: event.target.value }))}
+            placeholder={placeholder}
+            className="w-full rounded border border-gray-300 px-2 py-1 text-xs"
+          />
+          <button
+            type="button"
+            className="mt-2 text-xs text-red-500 hover:underline"
+            onClick={() => {
+              setFiltersRight((prev) => ({ ...prev, [key]: "" }));
+              setOpenFilter(null);
+            }}
+          >
+            مسح
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
+  const handleDeleteCompany = async (id) => {
+    try {
+      await softDeleteNashrNominatedCompany(id);
+      setCompanies((prev) => prev.filter((company) => company.id !== id));
+      if (selectedCompanyId === id) {
+        setSelectedCompanyId(null);
+      }
+    } catch {
+      // no-op
+    }
+  };
 
   return (
     <div className="space-y-3" dir="rtl">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
-        <AppSelect label="الشركة" isCreatable={false} options={companyOptions} value={companyOptions.find((opt) => opt.value === filtersLeft.sharika) || null} onChange={(opt) => setFiltersLeft({ sharika: opt?.value || "" })} />
-        <Input label="المقاولون العرب" showLabel={false} defaultValue="المقاولون العرب" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+        <AppSelect label="الشركة" isCreatable={false} options={companyOptions} value={companyOptions.find((opt) => opt.value === filtersRight.sharika) || null} onChange={(opt) => setFiltersRight((prev) => ({ ...prev, sharika: opt?.value || "" }))} />
         <Input label="السجل" showLabel={false} defaultValue="السجل" />
-        <Input label="25555" showLabel={false} defaultValue="25555" />
-        <Button size="sm" variant="primary" className="h-[48px]">بحث</Button>
-        <Button size="sm" variant="danger" className="h-[48px]">حذف</Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="border border-gray-200 rounded bg-base overflow-hidden">
-          <table className="w-full text-sm text-right">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="p-3 font-semibold">اسم الشركات المرشحة</th>
+      <div className="border border-gray-200 rounded bg-base overflow-hidden">
+        <table className="w-full text-sm text-right">
+          <thead>
+            <tr className="border-b border-gray-200 bg-gray-50">
+              <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>الشركات</span>{renderFilterDropdown("sharika", "فلتر الشركات")}</div></th>
+              <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>رقم السجل</span>{renderFilterDropdown("raqmSijl", "فلتر رقم السجل")}</div></th>
+              <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>رقم الموافقة</span>{renderFilterDropdown("raqmMwafaqa", "فلتر رقم الموافقة")}</div></th>
+              <th className="p-3 font-semibold">الأجرائات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rightRows.map((c, idx) => (
+              <tr
+                key={c.id}
+                onClick={() => setSelectedCompanyId(c.id)}
+                className={`p-2 cursor-pointer border-b border-gray-100 ${selectedCompanyId === c.id ? "bg-primary-100" : idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}
+              >
+                <td className="p-3 border-l border-gray-100">{c.sharika}</td>
+                <td className="p-3 border-l border-gray-100">{c.raqmSijl}</td>
+                <td className="p-3 border-l border-gray-100">{c.raqmMwafaqa}</td>
+                <td className="p-3">
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleDeleteCompany(c.id);
+                    }}
+                  >
+                    حذف
+                  </Button>
+                </td>
               </tr>
-              <tr className="bg-base border-b border-gray-200">
-                <th className="p-2">-</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leftRows.map((c, idx) => (
-                <tr
-                  key={c.id}
-                  onClick={() => setSelectedCompanyId(c.id)}
-                  className={`cursor-pointer border-b border-gray-100 ${selectedCompanyId === c.id ? "bg-primary-100" : idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}
-                >
-                  <td className="p-3">{c.sharika.includes("المقاولون") ? `شركة ${c.sharika}` : c.sharika}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="border border-gray-200 rounded bg-base overflow-hidden">
-          <table className="w-full text-sm text-right">
-            <thead>
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="p-3 font-semibold border-l border-gray-200">الشركات</th>
-                <th className="p-3 font-semibold border-l border-gray-200">رقم السجل</th>
-                <th className="p-3 font-semibold">رقم الموافقة</th>
-              </tr>
-              <tr className="border-b border-gray-200 bg-base align-top">
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filtersRight.sharika} onChange={(v) => setFiltersRight((p) => ({ ...p, sharika: v }))} placeholder="فلتر الشركات" /></th>
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filtersRight.raqmSijl} onChange={(v) => setFiltersRight((p) => ({ ...p, raqmSijl: v }))} placeholder="فلتر رقم السجل" /></th>
-                <th className="p-2"><TableFilterCell value={filtersRight.raqmMwafaqa} onChange={(v) => setFiltersRight((p) => ({ ...p, raqmMwafaqa: v }))} placeholder="فلتر رقم الموافقة" /></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rightRows.map((c, idx) => (
-                <tr
-                  key={c.id}
-                  onClick={() => setSelectedCompanyId(c.id)}
-                  className={`p-2 cursor-pointer border-b border-gray-100 ${selectedCompanyId === c.id ? "bg-primary-100" : idx % 2 === 0 ? "bg-base" : "bg-gray-50/50"} hover:bg-primary-50`}
-                >
-                  <td className="p-3 border-l border-gray-100">{c.sharika}</td>
-                  <td className="p-3 border-l border-gray-100">{c.raqmSijl}</td>
-                  <td className="p-3">{c.raqmMwafaqa}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-start">
+        <Button size="sm" variant="primary">حفظ</Button>
       </div>
     </div>
   );
