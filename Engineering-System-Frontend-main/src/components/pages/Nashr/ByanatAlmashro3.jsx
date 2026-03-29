@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Filter } from "lucide-react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import AppSelect from "../../ui/AppSelect/AppSelect";
@@ -113,8 +114,13 @@ function MashroSection({ projectRecord, ownerOptions, onOwnerInputChange, onOwne
 
 function ShorotSection({ shorotData }) {
   const [filters, setFilters] = useState({ kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", qima: "", tartib: "" });
+  const [openFilter, setOpenFilter] = useState(null);
   const [conditions, setConditions] = useState(shorotData);
   const filtered = useMemo(() => applyFilters(conditions, filters), [conditions, filters]);
+  const totalQima = useMemo(
+    () => filtered.reduce((sum, row) => sum + (Number.parseFloat(String(row.qima || "").replace(/,/g, "")) || 0), 0),
+    [filtered],
+  );
 
   useEffect(() => {
     setConditions(shorotData);
@@ -123,35 +129,53 @@ function ShorotSection({ shorotData }) {
   const addCondition = () => setConditions((prev) => [...prev, { id: Date.now(), kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", tartib: "", qima: "" }]);
   const removeCondition = (id) => setConditions((prev) => prev.filter((row) => row.id !== id));
   const updateCondition = (id, key, value) => setConditions((prev) => prev.map((row) => row.id === id ? { ...row, [key]: value } : row));
+  const renderFilterDropdown = (key, placeholder) => (
+    <div className="relative inline-flex">
+      <button
+        type="button"
+        className="rounded p-1 text-primary-600 hover:bg-primary-50"
+        onClick={() => setOpenFilter((prev) => prev === key ? null : key)}
+        aria-label={`فلتر ${placeholder}`}
+      >
+        <Filter size={14} />
+      </button>
+      {openFilter === key && (
+        <div className="absolute top-7 right-0 z-20 min-w-44 rounded border border-gray-200 bg-base p-2 shadow-lg">
+          <input
+            value={filters[key]}
+            onChange={(event) => setFilters((prev) => ({ ...prev, [key]: event.target.value }))}
+            placeholder={placeholder}
+            className="w-full rounded border border-gray-300 px-2 py-1 text-xs"
+          />
+          <button
+            type="button"
+            className="mt-2 text-xs text-red-500 hover:underline"
+            onClick={() => {
+              setFilters((prev) => ({ ...prev, [key]: "" }));
+              setOpenFilter(null);
+            }}
+          >
+            مسح
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="space-y-3" dir="rtl">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div><Input label="كود المشروع" showLabel={false} defaultValue="4585551456" /></div>
-        <div><Input label="اسم المشروع" showLabel={false} defaultValue="صيانة وتشغيل شبكة الكهرباء والمولدات..." /></div>
-      </div>
-
       <div className="flex flex-col lg:flex-row gap-3">
         <div className="order-2 lg:order-1 flex-1 overflow-x-auto border border-gray-200 rounded bg-base">
           <table className="w-full text-sm text-right">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="p-3 font-semibold border-l border-gray-200">كود نوع الشرط</th>
-                <th className="p-3 font-semibold border-l border-gray-200">اسم نوع الشرط</th>
-                <th className="p-3 font-semibold border-l border-gray-200">مسلسل/ الكود</th>
-                <th className="p-3 font-semibold border-l border-gray-200">وصف الشرط</th>
-                <th className="p-3 font-semibold border-l border-gray-200">القيمة</th>
-                <th className="p-3 font-semibold border-l border-gray-200">ترتيب الشروط</th>
+                <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>كود نوع الشرط</span>{renderFilterDropdown("kod", "فلتر كود نوع الشرط")}</div></th>
+                <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>اسم نوع الشرط</span>{renderFilterDropdown("ismNaw3Shart", "فلتر اسم النوع")}</div></th>
+                <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>مسلسل/ الكود</span>{renderFilterDropdown("mosalsal", "فلتر المسلسل")}</div></th>
+                <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>وصف الشرط</span>{renderFilterDropdown("wasf", "فلتر الوصف")}</div></th>
+                <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>القيمة</span>{renderFilterDropdown("qima", "فلتر القيمة")}</div></th>
+                <th className="p-3 font-semibold border-l border-gray-200"><div className="flex items-center justify-between gap-2"><span>ترتيب الشروط</span>{renderFilterDropdown("tartib", "فلتر الترتيب")}</div></th>
                 <th className="p-3 font-semibold">إجراء</th>
-              </tr>
-              <tr className="border-b border-gray-200 bg-base align-top">
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kod} onChange={(v) => setFilters((p) => ({ ...p, kod: v }))} placeholder="فلتر كود نوع الشرط" /></th>
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ismNaw3Shart} onChange={(v) => setFilters((p) => ({ ...p, ismNaw3Shart: v }))} placeholder="فلتر اسم النوع" /></th>
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.mosalsal} onChange={(v) => setFilters((p) => ({ ...p, mosalsal: v }))} placeholder="فلتر المسلسل" /></th>
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.wasf} onChange={(v) => setFilters((p) => ({ ...p, wasf: v }))} placeholder="فلتر الوصف" /></th>
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.qima} onChange={(v) => setFilters((p) => ({ ...p, qima: v }))} placeholder="فلتر القيمة" /></th>
-                <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.tartib} onChange={(v) => setFilters((p) => ({ ...p, tartib: v }))} placeholder="فلتر الترتيب" /></th>
-                <th className="p-2"/>
               </tr>
             </thead>
             <tbody>
@@ -169,9 +193,13 @@ function ShorotSection({ shorotData }) {
             </tbody>
             <tfoot>
               <tr className="bg-gray-50 font-semibold">
-                <td className="p-3 border-l border-gray-100">الإجمالي: {filtered.length}</td>
-                <td className="p-3 border-l border-gray-100">الإجمالي: {filtered.length}</td>
-                <td className="p-3">الإجمالي: {filtered.length}</td>
+                <td className="p-3 border-l border-gray-100" />
+                <td className="p-3 border-l border-gray-100" />
+                <td className="p-3 border-l border-gray-100" />
+                <td className="p-3 border-l border-gray-100">الإجمالي</td>
+                <td className="p-3 border-l border-gray-100">{totalQima.toLocaleString("ar-EG")}</td>
+                <td className="p-3 border-l border-gray-100" />
+                <td className="p-3" />
               </tr>
             </tfoot>
           </table>
@@ -184,6 +212,9 @@ function ShorotSection({ shorotData }) {
           <Button size="sm" className="bg-yellow-500 text-white hover:bg-yellow-600">طباعة العقد</Button>
           <Button size="sm" className="bg-yellow-500 text-white hover:bg-yellow-600">طباعة العقد مبدأئي/بدون</Button>
         </div>
+      </div>
+      <div className="flex justify-start">
+        <Button size="sm" variant="primary">حفظ</Button>
       </div>
     </div>
   );
