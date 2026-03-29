@@ -108,3 +108,43 @@ export const softDeleteWorkItem = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const updateWorkItem = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const {
+      projectCode,
+      title,
+      amount,
+      eventDate,
+      location,
+      status,
+      committee,
+      offers,
+      metadata,
+    } = req.body || {};
+
+    const updated = await repo.updateOne(
+      { _id: id, subtype: "work-item" },
+      {
+        projectCode,
+        title,
+        amount,
+        eventDate,
+        location,
+        status,
+        committee,
+        offers,
+        metadata,
+      },
+    );
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "السجل غير موجود" });
+    }
+
+    return res.json({ success: true, data: toPayload(updated) });
+  } catch (error) {
+    return next(error);
+  }
+};

@@ -3,6 +3,7 @@ import {
   getNashrFullData,
   softDeleteNominatedCompany,
   softDeleteWorkItem,
+  updateWorkItem,
 } from "../controllers/nashr.controller.js";
 
 const router = createOfficeRouter("Nashr", [
@@ -20,5 +21,6 @@ const router = createOfficeRouter("Nashr", [
 router.get("/full-data", getNashrFullData);
 router.patch("/nominated-company/:id/soft-delete", softDeleteNominatedCompany);
 router.patch("/work-item/:id/soft-delete", softDeleteWorkItem);
+router.patch("/work-item/:id", updateWorkItem);
 
 export default router;
