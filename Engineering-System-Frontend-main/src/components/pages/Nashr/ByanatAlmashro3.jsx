@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import AppSelect from "../../ui/AppSelect/AppSelect";
-import { getNashrFullData } from "../../../api/nashr";
+import { createNashrProjectRecord, getNashrFullData, getNashrRecords } from "../../../api/nashr";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
 
@@ -44,41 +44,68 @@ function TableFilterCell({ value, onChange, placeholder }) {
   );
 }
 
-function MashroSection() {
+function MashroSection({ projectRecord, ownerOptions, onOwnerInputChange, onOwnerEnterSave, isSavingOwner }) {
+  const ownerDatalistId = "owner-entity-options";
+
   return (
     <div className="space-y-3" dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
         <Input label="كود نوع المشروع" defaultValue="اعمال المباني" />
-        <Input label="العام المالي" type="select" showLabel={false} options={[{ value: "2025/2024", label: "2025/2024" }]} />
-        <Input label="تاريخ ورود الكارت" type="select" showLabel={false} options={[{ value: "4585551456", label: "4585551456" }]} />
+        <Input label="العام المالي" type="select" options={[{ value: "2025/2024", label: "2025/2024" }]} />
+        <Input label="تاريخ ورود الكارت" type="select" options={[{ value: "4585551456", label: "4585551456" }]} />
       </div>
 
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="تاريخ الاصدار" type="select" showLabel={false} options={[{ value: "2020/2/8", label: "2020/2/8" }]} />
-        <Input label="اسلوب النشر والتعاقد" type="select" showLabel={false} options={[{ value: "4585551456", label: "4585551456" }]} />
-        <Input label="تاريخ البداية الفعلي" type="select" showLabel={false} options={[{ value: "2020/2/15", label: "2020/2/15" }]} />
-        <Input label="تاريخ النهاية الفعلي" type="select" showLabel={false} options={[{ value: "2025/8/10", label: "2025/8/10" }]} />
+        <Input label="تاريخ الاصدار" type="select" options={[{ value: "2020/2/8", label: "2020/2/8" }]} />
+        <Input label="اسلوب النشر والتعاقد" type="select" options={[{ value: "4585551456", label: "4585551456" }]} />
+        <Input label="تاريخ البداية الفعلي" type="select" options={[{ value: "2020/2/15", label: "2020/2/15" }]} />
+        <Input label="تاريخ النهاية الفعلي" type="select" options={[{ value: "2025/8/10", label: "2025/8/10" }]} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="الجهة الطالبة" defaultValue="مركز تدريب المنشاة النموذجي بالهايكسلت" />
-        <Input label="التكلفة التقديرية" showLabel={false} defaultValue="125.252.500" />
-        <Input label="نسبة العلاوة" showLabel={false} defaultValue="0.25" />
+        <div className="md:col-span-2">
+          <Input
+            label="الجهة الطالبة"
+            list={ownerDatalistId}
+            value={projectRecord.metadata?.ownerEntity || ""}
+            onChange={(e) => onOwnerInputChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onOwnerEnterSave();
+              }
+            }}
+            disabled={isSavingOwner}
+          />
+          <datalist id={ownerDatalistId}>
+            {ownerOptions.map((option) => (
+              <option key={option} value={option} />
+            ))}
+          </datalist>
+        </div>
+        <Input label="التكلفة التقديرية" defaultValue="125.252.500" />
+        <Input label="نسبة العلاوة" defaultValue="0.25" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="رقم مذكرة الفرع المالي" showLabel={false} defaultValue="500" />
-        <Input label="الفرع المسؤل" showLabel={false} defaultValue="فرع الصيانة" />
-        <Input label="الشركة" showLabel={false} defaultValue="شاكر للمقاولات العامة والموردات" />
-        <Input label="تاريخ النشر" type="select" showLabel={false} options={[{ value: "2025/5/20", label: "2025/5/20" }]} />
+        <Input label="رقم مذكرة الفرع المالي" defaultValue="500" />
+        <Input label="الفرع المسؤل" defaultValue="فرع الصيانة" />
+        <Input label="الشركة" defaultValue="شاكر للمقاولات العامة والموردات" />
+        <Input label="تاريخ النشر" type="select" options={[{ value: "2025/5/20", label: "2025/5/20" }]} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-        <Input label="الموظف المسؤل" type="select" showLabel={false} options={[{ value: "الاستاذة/مي", label: "الاستاذة/مي" }]} />
-        <Input label="تاريخ الفتح الفعلي" type="select" showLabel={false} options={[{ value: "2025/10/2", label: "2025/10/2" }]} />
-        <Input label="المشروع الرئيسي" showLabel={false} defaultValue="4585551456" />
+        <Input label="الموظف المسؤل" type="select" options={[{ value: "الاستاذة/مي", label: "الاستاذة/مي" }]} />
+        <Input label="تاريخ الفتح الفعلي" type="select" options={[{ value: "2025/10/2", label: "2025/10/2" }]} />
+        <Input label="المشروع الرئيسي" defaultValue="4585551456" />
         <Button size="sm" variant="warning" className="h-[48px]">طباعة تقرير اللجان</Button>
+      </div>
+
+      <div className="flex justify-start">
+        <Button size="sm" variant="primary" onClick={onOwnerEnterSave} disabled={isSavingOwner}>
+          {isSavingOwner ? "جاري الحفظ..." : "حفظ"}
+        </Button>
       </div>
     </div>
   );
@@ -301,15 +328,78 @@ function BunodSection({ bunodData }) {
 
 export default function ByanatAlmashro3() {
   const [activeTab, setActiveTab] = useState("المشروع");
-  const [kodMashro3] = useState("4585551456");
+  const [kodMashro3, setKodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
   const [searchVal, setSearchVal] = useState("");
+  const [projectLookupVal, setProjectLookupVal] = useState("");
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [projectRecord, setProjectRecord] = useState({
+    projectCode: "4585551456",
+    title: "صيانة وتشغيل شبكة الكهرباء والمولدات...",
+    metadata: { ownerEntity: "مركز تدريب المنشاة النموذجي بالهايكسلت" },
+  });
+  const [isSavingOwner, setIsSavingOwner] = useState(false);
   const [companiesData, setCompaniesData] = useState(fallbackCompaniesData);
   const [bunodData, setBunodData] = useState(fallbackBunodData);
   const [shorotData, setShorotData] = useState(fallbackShorotData);
 
+  const filteredProjectOptions = useMemo(() => {
+    const query = projectLookupVal.trim().toLowerCase();
+    if (!query) return projectOptions;
+    return projectOptions.filter((project) => (
+      String(project.projectCode || "").toLowerCase().includes(query)
+      || String(project.title || "").toLowerCase().includes(query)
+    ));
+  }, [projectOptions, projectLookupVal]);
+
+  const ownerOptions = useMemo(() => {
+    const allOwners = projectOptions
+      .map((project) => project?.metadata?.ownerEntity)
+      .filter(Boolean);
+    const unique = [...new Set(allOwners)];
+    const ownerQuery = (projectRecord.metadata?.ownerEntity || "").trim().toLowerCase();
+    if (!ownerQuery) return unique;
+    return unique.filter((owner) => owner.toLowerCase().includes(ownerQuery));
+  }, [projectOptions, projectRecord.metadata?.ownerEntity]);
+
+  const applySelectedProject = (selectedCode) => {
+    if (!selectedCode) return;
+    const selected = projectOptions.find((project) => project.projectCode === selectedCode);
+    if (!selected) return;
+    setKodMashro3(selected.projectCode);
+    setProjectLookupVal(`${selected.projectCode} - ${selected.title}`);
+    setProjectRecord((prev) => ({ ...prev, ...selected, metadata: selected.metadata || prev.metadata || {} }));
+    setSearchVal(selected.title || "");
+  };
+
+  useEffect(() => {
+    getNashrRecords({ page: 1, pageSize: 500 }).then((records) => {
+      const projects = records.filter((item) => item.subtype === "project");
+      const normalized = projects.map((item, index) => ({
+        id: item.id || item._id || index + 1,
+        projectCode: item.projectCode || "",
+        title: item.title || "",
+        metadata: item.metadata || {},
+      }));
+      setProjectOptions(normalized);
+      const currentProject = normalized.find((project) => project.projectCode === kodMashro3);
+      if (currentProject) {
+        setProjectLookupVal(`${currentProject.projectCode} - ${currentProject.title}`);
+        setProjectRecord((prev) => ({ ...prev, ...currentProject }));
+      }
+    }).catch(() => {});
+  }, [kodMashro3]);
+
   useEffect(() => {
     getNashrFullData(kodMashro3).then((payload) => {
+      if (payload?.project) {
+        setProjectRecord({
+          projectCode: payload.project.projectCode || kodMashro3,
+          title: payload.project.title || "",
+          metadata: payload.project.metadata || {},
+        });
+        setSearchVal(payload.project.title || "");
+      }
       if (payload?.nominatedCompanies?.length) {
         setCompaniesData(payload.nominatedCompanies.map((item, index) => ({
           id: item.id || index + 1,
@@ -344,9 +434,56 @@ export default function ByanatAlmashro3() {
     }).catch(() => {});
   }, [kodMashro3]);
 
+  const saveProjectOwner = async () => {
+    const ownerValue = projectRecord.metadata?.ownerEntity?.trim();
+    if (!ownerValue) return;
+    setIsSavingOwner(true);
+    try {
+      await createNashrProjectRecord({
+        projectCode: projectRecord.projectCode || kodMashro3,
+        title: projectRecord.title || "بيانات المشروع",
+        amount: Number(projectRecord.amount || 0),
+        metadata: {
+          ...(projectRecord.metadata || {}),
+          ownerEntity: ownerValue,
+        },
+      });
+      if (!ownerOptions.includes(ownerValue)) {
+        setProjectOptions((prev) => [
+          ...prev,
+          {
+            id: Date.now(),
+            projectCode: projectRecord.projectCode || kodMashro3,
+            title: projectRecord.title || "بيانات المشروع",
+            metadata: {
+              ...(projectRecord.metadata || {}),
+              ownerEntity: ownerValue,
+            },
+          },
+        ]);
+      }
+    } catch (_) {
+      // no-op
+    } finally {
+      setIsSavingOwner(false);
+    }
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
-      case "المشروع": return <MashroSection />;
+      case "المشروع":
+        return (
+          <MashroSection
+            projectRecord={projectRecord}
+            ownerOptions={ownerOptions}
+            onOwnerInputChange={(value) => setProjectRecord((prev) => ({
+              ...prev,
+              metadata: { ...(prev.metadata || {}), ownerEntity: value },
+            }))}
+            onOwnerEnterSave={saveProjectOwner}
+            isSavingOwner={isSavingOwner}
+          />
+        );
       case "شروط المشروع": return <ShorotSection shorotData={shorotData} />;
       case "ترشيح الشركات": return <TarshihSection companiesData={companiesData} />;
       case "بنود الاعمال": return <BunodSection bunodData={bunodData} />;
@@ -371,9 +508,42 @@ export default function ByanatAlmashro3() {
       </div>
 
       <div className="flex flex-wrap items-end gap-3 border border-gray-200 rounded p-3 bg-base">
-        <div className="w-full md:w-auto md:min-w-[220px]"><Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly /></div>
+        <div className="w-full md:w-auto md:min-w-[320px]">
+          <Input
+            label="بحث المشروع (الاسم / الكود)"
+            value={projectLookupVal}
+            onChange={(e) => setProjectLookupVal(e.target.value)}
+            list="project-search-options"
+            onBlur={() => {
+              const matched = filteredProjectOptions.find((project) => (
+                `${project.projectCode} - ${project.title}` === projectLookupVal
+                || project.projectCode === projectLookupVal
+                || project.title === projectLookupVal
+              ));
+              if (matched) applySelectedProject(matched.projectCode);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const matched = filteredProjectOptions.find((project) => (
+                  `${project.projectCode} - ${project.title}` === projectLookupVal
+                  || project.projectCode === projectLookupVal
+                  || project.title === projectLookupVal
+                ));
+                if (matched) {
+                  e.preventDefault();
+                  applySelectedProject(matched.projectCode);
+                }
+              }
+            }}
+          />
+          <datalist id="project-search-options">
+            {filteredProjectOptions.map((project) => (
+              <option key={project.id} value={`${project.projectCode} - ${project.title}`} />
+            ))}
+          </datalist>
+        </div>
         <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
-        <div className="flex-1 min-w-[260px]"><Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
+        <div className="flex-1 min-w-[260px]"><Input label="اسم المشروع" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
       </div>
 
       <div className="flex gap-4 border-b border-gray-200 pb-1">
