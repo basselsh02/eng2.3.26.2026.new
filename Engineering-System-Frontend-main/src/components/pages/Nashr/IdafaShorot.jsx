@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
+import { getNashrFullData } from "../../../api/nashr";
 
-const shorotData = [
+const fallbackShorotData = [
   { id: 1, kod: "455", ismNaw3Shart: "القيمة التقديرية", mosalsal: "9", wasf: "اكثر من 500 الف جنية", tartib: "2", qima: "" },
   { id: 2, kod: "787", ismNaw3Shart: "طريقة التعاقد", mosalsal: "99", wasf: "المناقصة المحدودة", tartib: "3", qima: "500" },
   { id: 3, kod: "325", ismNaw3Shart: "قيمة التامين المؤقت", mosalsal: "3", wasf: "جنية", tartib: "4", qima: "700" },
@@ -24,6 +25,22 @@ export default function IdafaShorot() {
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
   const [selected, setSelected] = useState(null);
+  const [rows, setRows] = useState(fallbackShorotData);
+
+  useEffect(() => {
+    getNashrFullData(kodMashro3).then((payload) => {
+      if (!payload?.conditions?.length) return;
+      setRows(payload.conditions.map((item, index) => ({
+        id: item.id || index + 1,
+        kod: item.metadata?.kod || "",
+        ismNaw3Shart: item.title || "",
+        mosalsal: item.metadata?.mosalsal || "",
+        wasf: item.metadata?.wasf || "",
+        tartib: item.metadata?.tartib || "",
+        qima: item.metadata?.qima || "",
+      })));
+    }).catch(() => {});
+  }, [kodMashro3]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
@@ -103,7 +120,7 @@ export default function IdafaShorot() {
               </tr>
             </thead>
             <tbody>
-              {shorotData
+              {rows
                 .filter((r) =>
                   !searchVal ||
                   r.ismNaw3Shart.includes(searchVal) ||

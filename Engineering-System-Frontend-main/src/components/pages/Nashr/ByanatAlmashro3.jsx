@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import AppSelect from "../../ui/AppSelect/AppSelect";
+import { getNashrFullData } from "../../../api/nashr";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
 
-const companiesData = [
+const fallbackCompaniesData = [
   { id: 1, sharika: "المقاولون العرب", raqmSijl: "20026", raqmMwafaqa: "5454" },
   { id: 2, sharika: "اطلس العامة للمقاولات", raqmSijl: "454", raqmMwafaqa: "7878" },
   { id: 3, sharika: "كيان للمقاولات", raqmSijl: "1456", raqmMwafaqa: "44" },
@@ -14,7 +15,7 @@ const companiesData = [
   { id: 6, sharika: "طية لانبسكيب للمقاولات العامة", raqmSijl: "2125", raqmMwafaqa: "54" },
 ];
 
-const bunodData = [
+const fallbackBunodData = [
   { id: 1, mosalsal: 1, wasf: "تم التعاقد بالمناقصة المحدودة", kod: "3", wahda: "152", kamiya: "25555", qima: "100.222.222", ijmali: "5451121.0000" },
   { id: 2, mosalsal: 1, wasf: "تم التعاقد بالمناقصة المحدودة", kod: "3", wahda: "152", kamiya: "25555", qima: "100.222.222", ijmali: "255455" },
   { id: 3, mosalsal: 1, wasf: "تم التعاقد بالمناقصة المحدودة", kod: "3", wahda: "152", kamiya: "25555", qima: "100.222.222", ijmali: "255455" },
@@ -23,7 +24,7 @@ const bunodData = [
   { id: 6, mosalsal: 1, wasf: "تم التعاقد بالمناقصة المحدودة", kod: "3", wahda: "152", kamiya: "25555", qima: "100.222.222", ijmali: "255455" },
 ];
 
-const shorotData = [
+const fallbackShorotData = [
   { id: 1, kod: "455", ismNaw3Shart: "القيمة التقديرية", mosalsal: "9", wasf: "اكثر من 500 الف جنية", tartib: "2", qima: "" },
   { id: 2, kod: "787", ismNaw3Shart: "طريقة التعاقد", mosalsal: "99", wasf: "المناقصة المحدودة", tartib: "3", qima: "500" },
   { id: 3, kod: "325", ismNaw3Shart: "قيمة التامين المؤقت", mosalsal: "3", wasf: "جنية", tartib: "4", qima: "700" },
@@ -83,10 +84,14 @@ function MashroSection() {
   );
 }
 
-function ShorotSection() {
+function ShorotSection({ shorotData }) {
   const [filters, setFilters] = useState({ kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", qima: "", tartib: "" });
   const [conditions, setConditions] = useState(shorotData);
   const filtered = useMemo(() => applyFilters(conditions, filters), [conditions, filters]);
+
+  useEffect(() => {
+    setConditions(shorotData);
+  }, [shorotData]);
 
   const addCondition = () => setConditions((prev) => [...prev, { id: Date.now(), kod: "", ismNaw3Shart: "", mosalsal: "", wasf: "", tartib: "", qima: "" }]);
   const removeCondition = (id) => setConditions((prev) => prev.filter((row) => row.id !== id));
@@ -157,14 +162,14 @@ function ShorotSection() {
   );
 }
 
-function TarshihSection() {
+function TarshihSection({ companiesData }) {
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [filtersLeft, setFiltersLeft] = useState({ sharika: "" });
   const companyOptions = companiesData.map((company) => ({ value: company.sharika, label: company.sharika }));
   const [filtersRight, setFiltersRight] = useState({ sharika: "", raqmSijl: "", raqmMwafaqa: "" });
 
-  const leftRows = useMemo(() => applyFilters(companiesData, filtersLeft), [filtersLeft]);
-  const rightRows = useMemo(() => applyFilters(companiesData, filtersRight), [filtersRight]);
+  const leftRows = useMemo(() => applyFilters(companiesData, filtersLeft), [companiesData, filtersLeft]);
+  const rightRows = useMemo(() => applyFilters(companiesData, filtersRight), [companiesData, filtersRight]);
 
   return (
     <div className="space-y-3" dir="rtl">
@@ -236,9 +241,16 @@ function TarshihSection() {
   );
 }
 
-function BunodSection() {
+function BunodSection({ bunodData }) {
   const [filters, setFilters] = useState({ mosalsal: "", wasf: "", kod: "", wahda: "", kamiya: "", qima: "", ijmali: "" });
-  const filtered = useMemo(() => applyFilters(bunodData, filters), [filters]);
+  const [rows, setRows] = useState(bunodData);
+  const filtered = useMemo(() => applyFilters(rows, filters), [rows, filters]);
+
+  useEffect(() => {
+    setRows(bunodData);
+  }, [bunodData]);
+
+  const updateCondition = (id, key, value) => setRows((prev) => prev.map((row) => row.id === id ? { ...row, [key]: value } : row));
 
   return (
     <div className="space-y-3" dir="rtl">
@@ -292,13 +304,52 @@ export default function ByanatAlmashro3() {
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
   const [searchVal, setSearchVal] = useState("");
+  const [companiesData, setCompaniesData] = useState(fallbackCompaniesData);
+  const [bunodData, setBunodData] = useState(fallbackBunodData);
+  const [shorotData, setShorotData] = useState(fallbackShorotData);
+
+  useEffect(() => {
+    getNashrFullData(kodMashro3).then((payload) => {
+      if (payload?.nominatedCompanies?.length) {
+        setCompaniesData(payload.nominatedCompanies.map((item, index) => ({
+          id: item.id || index + 1,
+          sharika: item.title || "",
+          raqmSijl: item.metadata?.raqmSijl || "",
+          raqmMwafaqa: item.metadata?.raqmMwafaqa || "",
+        })));
+      }
+      if (payload?.workItems?.length) {
+        setBunodData(payload.workItems.map((item, index) => ({
+          id: item.id || index + 1,
+          mosalsal: item.metadata?.mosalsal || "",
+          wasf: item.title || "",
+          kod: item.metadata?.kod || "",
+          wahda: item.metadata?.wahda || "",
+          kamiya: item.metadata?.kamiya || "",
+          qima: item.metadata?.qima || "",
+          ijmali: item.metadata?.ijmali || String(item.amount ?? ""),
+        })));
+      }
+      if (payload?.conditions?.length) {
+        setShorotData(payload.conditions.map((item, index) => ({
+          id: item.id || index + 1,
+          kod: item.metadata?.kod || "",
+          ismNaw3Shart: item.title || "",
+          mosalsal: item.metadata?.mosalsal || "",
+          wasf: item.metadata?.wasf || "",
+          tartib: item.metadata?.tartib || "",
+          qima: item.metadata?.qima || "",
+        })));
+      }
+    }).catch(() => {});
+  }, [kodMashro3]);
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "المشروع": return <MashroSection />;
-      case "شروط المشروع": return <ShorotSection />;
-      case "ترشيح الشركات": return <TarshihSection />;
-      case "بنود الاعمال": return <BunodSection />;
+      case "شروط المشروع": return <ShorotSection shorotData={shorotData} />;
+      case "ترشيح الشركات": return <TarshihSection companiesData={companiesData} />;
+      case "بنود الاعمال": return <BunodSection bunodData={bunodData} />;
       default: return null;
     }
   };

@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import TableFilterCell, { applyFilters } from "../../ui/TableFilter/TableFilterCell";
+import { getNashrFullData } from "../../../api/nashr";
 
-const projectsData = [
+const fallbackProjectsData = [
   { id: 1, raqmMashro3: "2588888", ismMashro3: "اعمال رفع كفاءة شبكة الكهرباء الرئيسية بالمجمع الطبي بكوبري القبة", taklfaMashro3: "45478744.0000", kodFar3: "12", ismFar3Monafez: "فرع الصيانة" },
   { id: 2, raqmMashro3: "2588888", ismMashro3: "توريد اسمنت لزوم مباني ميناء ابو قير الجديد بشرق الاسكندرية (ابو قير)", taklfaMashro3: "41545451012.544", kodFar3: "65", ismFar3Monafez: "فرع الامداد" },
   { id: 3, raqmMashro3: "2588888", ismMashro3: "اعمال التصميمات لرفع كفاءة مستشفى سوهاج العسكري", taklfaMashro3: "487754.000", kodFar3: "877", ismFar3Monafez: "اللواء 150 اشغال" },
@@ -12,7 +13,7 @@ const projectsData = [
   { id: 6, raqmMashro3: "2588888", ismMashro3: "انشاء الهيكل رقم 9 ببطاقة رقم 2 بمشروع الواجهة البحرية العربية", taklfaMashro3: "100.000.000", kodFar3: "7", ismFar3Monafez: "اللواء 152 انشاءات" },
 ];
 
-const companiesData = [
+const fallbackCompaniesData = [
   { id: 1, kod: "ملتزم", ismSharika: "شركة المقاولون العرب", tamAlShra: true, tariqaDaf3: "بدون" },
   { id: 2, kod: "ملتزم", ismSharika: "اطلس العامة للمقاولات", tamAlShra: false, tariqaDaf3: "بدون" },
   { id: 3, kod: "ملتزم", ismSharika: "كيان للمقاولات", tamAlShra: true, tariqaDaf3: "بدون" },
@@ -25,8 +26,36 @@ export default function Bay3Krassat() {
   const [amMali] = useState("2026/2025");
   const [filters, setFilters] = useState({raqmMashro3: "", ismMashro3: "", taklfaMashro3: "", kodFar3: "", ismFar3Monafez: ""});
   const [companyFilters, setCompanyFilters] = useState({ kod: "", ismSharika: "", tamAlShra: "", tariqaDaf3: "" });
-  const filteredRows = useMemo(() => applyFilters(projectsData, filters), [filters]);
-  const filteredCompanies = useMemo(() => applyFilters(companiesData, companyFilters), [companyFilters]);
+  const [projectsData, setProjectsData] = useState(fallbackProjectsData);
+  const [companiesData, setCompaniesData] = useState(fallbackCompaniesData);
+
+  useEffect(() => {
+    getNashrFullData(kodMashro3).then((payload) => {
+      if (payload?.bay3KrassatProjects?.length) {
+        setProjectsData(payload.bay3KrassatProjects.map((item, index) => ({
+          id: item.id || index + 1,
+          raqmMashro3: item.metadata?.raqmMashro3 || item.projectCode || "",
+          ismMashro3: item.title || "",
+          taklfaMashro3: String(item.amount ?? ""),
+          kodFar3: item.metadata?.kodFar3 || "",
+          ismFar3Monafez: item.metadata?.ismFar3Monafez || "",
+        })));
+      }
+
+      if (payload?.bay3KrassatCompanies?.length) {
+        setCompaniesData(payload.bay3KrassatCompanies.map((item, index) => ({
+          id: item.id || index + 1,
+          kod: item.metadata?.kod || "",
+          ismSharika: item.title || "",
+          tamAlShra: Boolean(item.metadata?.tamAlShra),
+          tariqaDaf3: item.metadata?.tariqaDaf3 || "بدون",
+        })));
+      }
+    }).catch(() => {});
+  }, [kodMashro3]);
+
+  const filteredRows = useMemo(() => applyFilters(projectsData, filters), [projectsData, filters]);
+  const filteredCompanies = useMemo(() => applyFilters(companiesData, companyFilters), [companiesData, companyFilters]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
