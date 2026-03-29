@@ -90,3 +90,21 @@ export const softDeleteNominatedCompany = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const softDeleteWorkItem = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updated = await repo.updateOne(
+      { _id: id, subtype: "work-item" },
+      { status: "deleted" },
+    );
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "السجل غير موجود" });
+    }
+
+    return res.json({ success: true, data: { id: String(updated._id), status: updated.status } });
+  } catch (error) {
+    return next(error);
+  }
+};

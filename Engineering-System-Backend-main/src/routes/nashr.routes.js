@@ -1,5 +1,9 @@
 import { createOfficeRouter } from "./common.route-factory.js";
-import { getNashrFullData, softDeleteNominatedCompany } from "../controllers/nashr.controller.js";
+import {
+  getNashrFullData,
+  softDeleteNominatedCompany,
+  softDeleteWorkItem,
+} from "../controllers/nashr.controller.js";
 
 const router = createOfficeRouter("Nashr", [
   "tahsilat",
@@ -15,5 +19,6 @@ const router = createOfficeRouter("Nashr", [
 
 router.get("/full-data", getNashrFullData);
 router.patch("/nominated-company/:id/soft-delete", softDeleteNominatedCompany);
+router.patch("/work-item/:id/soft-delete", softDeleteWorkItem);
 
 export default router;

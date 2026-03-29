@@ -8,6 +8,7 @@ import {
   getNashrFullData,
   getNashrRecords,
   softDeleteNashrNominatedCompany,
+  softDeleteNashrWorkItem,
 } from "../../../api/nashr";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
@@ -334,16 +335,100 @@ function TarshihSection({ companiesData }) {
   );
 }
 
-function BunodSection({ bunodData }) {
+function BunodSection({ bunodData, projectCode }) {
   const [filters, setFilters] = useState({ mosalsal: "", wasf: "", kod: "", wahda: "", kamiya: "", qima: "", ijmali: "" });
   const [rows, setRows] = useState(bunodData);
+  const [isSaving, setIsSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const filtered = useMemo(() => applyFilters(rows, filters), [rows, filters]);
+  const totals = useMemo(
+    () => rows.reduce((acc, row) => {
+      const wahda = Number.parseFloat(String(row.wahda || "").replace(/,/g, "")) || 0;
+      const kamiya = Number.parseFloat(String(row.kamiya || "").replace(/,/g, "")) || 0;
+      const qima = Number.parseFloat(String(row.qima || "").replace(/,/g, "")) || 0;
+      const ijmali = Number.parseFloat(String(row.ijmali || "").replace(/,/g, "")) || 0;
+      return {
+        wahda: acc.wahda + wahda,
+        kamiya: acc.kamiya + kamiya,
+        qima: acc.qima + qima,
+        ijmali: acc.ijmali + ijmali,
+      };
+    }, { wahda: 0, kamiya: 0, qima: 0, ijmali: 0 }),
+    [rows],
+  );
 
   useEffect(() => {
     setRows(bunodData);
   }, [bunodData]);
 
-  const updateCondition = (id, key, value) => setRows((prev) => prev.map((row) => row.id === id ? { ...row, [key]: value } : row));
+  const normalizeNumber = (value) => {
+    const parsed = Number.parseFloat(String(value || "").replace(/,/g, ""));
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+
+  const updateCondition = (id, key, value) => {
+    setRows((prev) => prev.map((row) => {
+      if (row.id !== id) return row;
+      const updated = { ...row, [key]: value };
+      if (key === "qima" || key === "kamiya") {
+        const qima = normalizeNumber(key === "qima" ? value : updated.qima);
+        const kamiya = normalizeNumber(key === "kamiya" ? value : updated.kamiya);
+        updated.ijmali = String(qima * kamiya);
+      }
+      return updated;
+    }));
+  };
+
+  const addRow = () => setRows((prev) => [...prev, {
+    id: `new-${Date.now()}`,
+    mosalsal: "",
+    wasf: "",
+    kod: "",
+    wahda: "",
+    kamiya: "",
+    qima: "",
+    ijmali: "0",
+  }]);
+
+  const removeRow = async (id) => {
+    if (String(id).startsWith("new-")) {
+      setRows((prev) => prev.filter((row) => row.id !== id));
+      return;
+    }
+    setDeletingId(id);
+    try {
+      await softDeleteNashrWorkItem(id);
+      setRows((prev) => prev.filter((row) => row.id !== id));
+    } catch {
+      // no-op
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const saveRows = async () => {
+    setIsSaving(true);
+    try {
+      await Promise.all(rows.map((row) => createNashrProjectRecord({
+        subtype: "work-item",
+        projectCode: projectCode || "4585551456",
+        title: row.wasf || "بند اعمال",
+        amount: normalizeNumber(row.ijmali),
+        metadata: {
+          mosalsal: row.mosalsal || "",
+          kod: row.kod || "",
+          wahda: row.wahda || "",
+          kamiya: row.kamiya || "",
+          qima: row.qima || "",
+          ijmali: row.ijmali || "0",
+        },
+      })));
+    } catch {
+      // no-op
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-3" dir="rtl">
@@ -357,7 +442,8 @@ function BunodSection({ bunodData }) {
               <th className="p-3 font-semibold border-l border-gray-200">الوحدة</th>
               <th className="p-3 font-semibold border-l border-gray-200">الكمية</th>
               <th className="p-3 font-semibold border-l border-gray-200">القيمة</th>
-              <th className="p-3 font-semibold">الاجمالي</th>
+              <th className="p-3 font-semibold border-l border-gray-200">الاجمالي</th>
+              <th className="p-3 font-semibold">الأجرائات</th>
             </tr>
             <tr className="border-b border-gray-200 bg-base align-top">
               <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.mosalsal} onChange={(v) => setFilters((p) => ({ ...p, mosalsal: v }))} placeholder="فلتر المسلسل" /></th>
@@ -366,7 +452,8 @@ function BunodSection({ bunodData }) {
               <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.wahda} onChange={(v) => setFilters((p) => ({ ...p, wahda: v }))} placeholder="فلتر الوحدة" /></th>
               <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.kamiya} onChange={(v) => setFilters((p) => ({ ...p, kamiya: v }))} placeholder="فلتر الكمية" /></th>
               <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.qima} onChange={(v) => setFilters((p) => ({ ...p, qima: v }))} placeholder="فلتر القيمة" /></th>
-              <th className="p-2"><TableFilterCell value={filters.ijmali} onChange={(v) => setFilters((p) => ({ ...p, ijmali: v }))} placeholder="فلتر الاجمالي" /></th>
+              <th className="p-2 border-l border-gray-100"><TableFilterCell value={filters.ijmali} onChange={(v) => setFilters((p) => ({ ...p, ijmali: v }))} placeholder="فلتر الاجمالي" /></th>
+              <th className="p-2" />
             </tr>
           </thead>
           <tbody>
@@ -375,18 +462,34 @@ function BunodSection({ bunodData }) {
                 <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.mosalsal} onChange={(e)=>updateCondition(row.id,"mosalsal",e.target.value)} label="mosalsal" /></td>
                 <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.wasf} onChange={(e)=>updateCondition(row.id,"wasf",e.target.value)} label="wasf" /></td>
                 <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.kod} onChange={(e)=>updateCondition(row.id,"kod",e.target.value)} label="kod" /></td>
-                <td className="p-3 border-l border-gray-100">{row.wahda}</td>
-                <td className="p-3 border-l border-gray-100">{row.kamiya}</td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.wahda} onChange={(e)=>updateCondition(row.id,"wahda",e.target.value)} label="wahda" /></td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.kamiya} onChange={(e)=>updateCondition(row.id,"kamiya",e.target.value)} label="kamiya" /></td>
                 <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.qima} onChange={(e)=>updateCondition(row.id,"qima",e.target.value)} label="qima" /></td>
-                <td className="p-3">{row.ijmali}</td>
+                <td className="p-3 border-l border-gray-100"><Input showLabel={false} value={row.ijmali} label="ijmali" readOnly disabled /></td>
+                <td className="p-3">
+                  <Button size="sm" variant="danger" onClick={() => removeRow(row.id)} disabled={deletingId === row.id}>
+                    حذف
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-primary-500 text-white font-semibold">100.000.222</span>
+      <div className="flex items-center gap-3">
         <span className="text-sm font-medium">اجمالي الاعمال</span>
+        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-base font-semibold min-w-[120px] text-center">{totals.wahda}</span>
+        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-base font-semibold min-w-[120px] text-center">{totals.kamiya}</span>
+        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-base font-semibold min-w-[120px] text-center">{totals.qima}</span>
+        <span className="border border-gray-300 rounded px-4 py-2 text-sm bg-primary-500 text-white font-semibold min-w-[120px] text-center">{totals.ijmali}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button size="sm" variant="primary" onClick={addRow}>إضافة</Button>
+      </div>
+      <div className="flex justify-start">
+        <Button size="sm" variant="primary" onClick={saveRows} disabled={isSaving}>
+          {isSaving ? "جاري الحفظ..." : "حفظ"}
+        </Button>
       </div>
     </div>
   );
@@ -550,7 +653,7 @@ export default function ByanatAlmashro3() {
         );
       case "شروط المشروع": return <ShorotSection shorotData={shorotData} />;
       case "ترشيح الشركات": return <TarshihSection companiesData={companiesData} />;
-      case "بنود الاعمال": return <BunodSection bunodData={bunodData} />;
+      case "بنود الاعمال": return <BunodSection bunodData={bunodData} projectCode={kodMashro3} />;
       default: return null;
     }
   };
