@@ -1,0 +1,6 @@
+code,name,office,financialYear,status,projectType,budget,conditions,companiesNominated
+NSH-2026-001,Booklet Publication Program,nashr,2026,active,publishing,350000,"Paper quality >= 80gsm|Delivery in 15 days","Dar Al-Handasa Press|Future Print Co"
+OQD-2026-004,Contract Governance Modernization,oqood,2026,active,service,620000,"Monthly committee review|Legal compliance checkpoint","Al Waseet Legal|ContractHub LLC"
+SYN-2026-010,Critical Maintenance Recovery,siyana,2026,halted,maintenance,480000,"Site safety verified|Root cause attached","RapidFix|MENA Maintenance"
+TWR-2026-014,National Supplies Framework,tawridat,2026,draft,supply,950000,"Form 41 ready|Settlement SLA <= 30 days","Al-Noor Trading|Iraq Supplies Group"
+MZN-2026-020,Budget & Accounts Reconciliation,mizaniya,2026,active,service,280000,"Guarantee tracking enabled|Invoice aging report","Delta Finance|Qaf Accounting"

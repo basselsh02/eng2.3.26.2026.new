@@ -6,7 +6,7 @@ import rateLimit from "express-rate-limit";
 import { connectDatabase } from "./src/config/database.js";
 import apiRouter from "./src/routes/index.js";
 import { errorHandler } from "./src/middleware/error-handler.js";
-import { seedMockProjects } from "./src/seed/mock-projects.js";
+import { seedProjectsAndCompaniesFromExcel } from "./src/seed/projects-companies.seed.js";
 import { seedSuperAdmin } from "./src/seed/superadmin.seed.js";
 import { seedNashrRecords } from "./src/seed/nashr.seed.js";
 
@@ -47,7 +47,7 @@ const PORT = Number(process.env.PORT || 5000);
 
 const startServer = async () => {
   await connectDatabase();
-  await seedMockProjects();
+  await seedProjectsAndCompaniesFromExcel();
   await seedSuperAdmin();
   await seedNashrRecords();
 
