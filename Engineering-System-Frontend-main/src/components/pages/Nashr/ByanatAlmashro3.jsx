@@ -9,6 +9,7 @@ import {
   getNashrRecords,
   softDeleteNashrNominatedCompany,
   softDeleteNashrWorkItem,
+  updateNashrWorkItem,
 } from "../../../api/nashr";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
@@ -409,20 +410,35 @@ function BunodSection({ bunodData, projectCode }) {
   const saveRows = async () => {
     setIsSaving(true);
     try {
-      await Promise.all(rows.map((row) => createNashrProjectRecord({
-        subtype: "work-item",
-        projectCode: projectCode || "4585551456",
-        title: row.wasf || "بند اعمال",
-        amount: normalizeNumber(row.ijmali),
-        metadata: {
-          mosalsal: row.mosalsal || "",
-          kod: row.kod || "",
-          wahda: row.wahda || "",
-          kamiya: row.kamiya || "",
-          qima: row.qima || "",
-          ijmali: row.ijmali || "0",
-        },
-      })));
+      const savedRows = await Promise.all(rows.map((row) => {
+        const payload = {
+          subtype: "work-item",
+          projectCode: projectCode || "4585551456",
+          title: row.wasf || "بند اعمال",
+          amount: normalizeNumber(row.ijmali),
+          metadata: {
+            mosalsal: row.mosalsal || "",
+            kod: row.kod || "",
+            wahda: row.wahda || "",
+            kamiya: row.kamiya || "",
+            qima: row.qima || "",
+            ijmali: row.ijmali || "0",
+          },
+        };
+
+        if (String(row.id).startsWith("new-")) {
+          return createNashrProjectRecord(payload).then((saved) => ({
+            ...row,
+            id: saved?.id || saved?._id || row.id,
+          }));
+        }
+
+        return updateNashrWorkItem(row.id, payload).then((saved) => ({
+          ...row,
+          id: saved?.id || row.id,
+        }));
+      }));
+      setRows(savedRows);
     } catch {
       // no-op
     } finally {

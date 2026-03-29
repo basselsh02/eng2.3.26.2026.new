@@ -24,3 +24,8 @@ export const softDeleteNashrWorkItem = async (id) => {
   const { data } = await apiClient.patch(`/api/nashr/work-item/${id}/soft-delete`);
   return data?.data;
 };
+
+export const updateNashrWorkItem = async (id, payload) => {
+  const { data } = await apiClient.patch(`/api/nashr/work-item/${id}`, payload);
+  return data?.data;
+};
