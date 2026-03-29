@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import TableFilterCell, { applyFilters } from "../../ui/TableFilter/TableFilterCell";
+import { getNashrFullData } from "../../../api/nashr";
 
-const mockData = [
+const fallbackData = [
   { id: 1, raqmMashro3: "2588888", ismMashro3: "اعمال رفع كفاءة شبكة الكهرباء الرئيسية بالمجمع الطبي بكوبري القبة", taklfaMashro3: "45478744.0000", kodFar3: "12", ismFar3Monafez: "فرع الصيانة", askariMadani: true },
   { id: 2, raqmMashro3: "2588888", ismMashro3: "توريد اسمنت لزوم مباني ميناء ابو قير الجديد بشرق الاسكندرية (ابو قير)", taklfaMashro3: "41545451012.544", kodFar3: "65", ismFar3Monafez: "فرع الامداد", askariMadani: false },
   { id: 3, raqmMashro3: "2588888", ismMashro3: "اعمال التصميمات لرفع كفاءة مستشفى سوهاج العسكري", taklfaMashro3: "487754.000", kodFar3: "877", ismFar3Monafez: "اللواء 150 اشغال", askariMadani: true },
@@ -14,7 +15,24 @@ export default function Tiba3aMozakrat() {
   const [kodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
   const [filters, setFilters] = useState({ raqmMashro3: "", ismMashro3: "", taklfaMashro3: "", kodFar3: "", ismFar3Monafez: "", askariMadani: "" });
-  const filtered = useMemo(() => applyFilters(mockData, filters), [filters]);
+  const [rows, setRows] = useState(fallbackData);
+
+  useEffect(() => {
+    getNashrFullData(kodMashro3).then((payload) => {
+      if (!payload?.tiba3aMozakrat?.length) return;
+      setRows(payload.tiba3aMozakrat.map((item, index) => ({
+        id: item.id || index + 1,
+        raqmMashro3: item.metadata?.raqmMashro3 || item.projectCode || "",
+        ismMashro3: item.title || "",
+        taklfaMashro3: String(item.amount ?? ""),
+        kodFar3: item.metadata?.kodFar3 || "",
+        ismFar3Monafez: item.metadata?.ismFar3Monafez || "",
+        askariMadani: Boolean(item.metadata?.askariMadani),
+      })));
+    }).catch(() => {});
+  }, [kodMashro3]);
+
+  const filtered = useMemo(() => applyFilters(rows, filters), [rows, filters]);
 
   return (
     <div className="p-4 space-y-4" dir="rtl">
