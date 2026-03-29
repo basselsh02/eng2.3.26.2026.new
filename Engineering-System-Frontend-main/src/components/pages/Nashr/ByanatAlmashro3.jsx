@@ -330,7 +330,6 @@ export default function ByanatAlmashro3() {
   const [activeTab, setActiveTab] = useState("المشروع");
   const [kodMashro3, setKodMashro3] = useState("4585551456");
   const [amMali] = useState("2026/2025");
-  const [searchVal, setSearchVal] = useState("");
   const [projectLookupVal, setProjectLookupVal] = useState("");
   const [projectOptions, setProjectOptions] = useState([]);
   const [projectRecord, setProjectRecord] = useState({
@@ -369,7 +368,6 @@ export default function ByanatAlmashro3() {
     setKodMashro3(selected.projectCode);
     setProjectLookupVal(`${selected.projectCode} - ${selected.title}`);
     setProjectRecord((prev) => ({ ...prev, ...selected, metadata: selected.metadata || prev.metadata || {} }));
-    setSearchVal(selected.title || "");
   };
 
   useEffect(() => {
@@ -398,7 +396,7 @@ export default function ByanatAlmashro3() {
           title: payload.project.title || "",
           metadata: payload.project.metadata || {},
         });
-        setSearchVal(payload.project.title || "");
+        setProjectLookupVal(`${payload.project.projectCode || kodMashro3} - ${payload.project.title || ""}`);
       }
       if (payload?.nominatedCompanies?.length) {
         setCompaniesData(payload.nominatedCompanies.map((item, index) => ({
@@ -462,7 +460,7 @@ export default function ByanatAlmashro3() {
           },
         ]);
       }
-    } catch (_) {
+    } catch {
       // no-op
     } finally {
       setIsSavingOwner(false);
@@ -538,12 +536,17 @@ export default function ByanatAlmashro3() {
           />
           <datalist id="project-search-options">
             {filteredProjectOptions.map((project) => (
-              <option key={project.id} value={`${project.projectCode} - ${project.title}`} />
+              <option key={`${project.id}-code-title`} value={`${project.projectCode} - ${project.title}`} />
+            ))}
+            {filteredProjectOptions.map((project) => (
+              <option key={`${project.id}-code`} value={project.projectCode} />
+            ))}
+            {filteredProjectOptions.map((project) => (
+              <option key={`${project.id}-title`} value={project.title} />
             ))}
           </datalist>
         </div>
         <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
-        <div className="flex-1 min-w-[260px]"><Input label="اسم المشروع" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
       </div>
 
       <div className="flex gap-4 border-b border-gray-200 pb-1">
