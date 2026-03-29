@@ -5,6 +5,14 @@ import AppSelect from "../../ui/AppSelect/AppSelect";
 
 const tabs = ["المشروع", "شروط المشروع", "ترشيح الشركات", "بنود الاعمال"];
 
+const projectsSeed = [
+  { code: "4585551456", name: "صيانة وتشغيل شبكة الكهرباء والمولدات" },
+  { code: "4585551457", name: "تطوير مبنى الإدارة الرئيسية" },
+  { code: "4585551458", name: "إحلال وتجديد أنظمة التكييف المركزي" },
+  { code: "4585551459", name: "رفع كفاءة البنية التحتية للموقع" },
+  { code: "4585551460", name: "توريد وتركيب منظومة الإنذار والحريق" },
+];
+
 const companiesData = [
   { id: 1, sharika: "المقاولون العرب", raqmSijl: "20026", raqmMwafaqa: "5454" },
   { id: 2, sharika: "اطلس العامة للمقاولات", raqmSijl: "454", raqmMwafaqa: "7878" },
@@ -289,9 +297,17 @@ function BunodSection() {
 
 export default function ByanatAlmashro3() {
   const [activeTab, setActiveTab] = useState("المشروع");
-  const [kodMashro3] = useState("4585551456");
+  const [selectedProject, setSelectedProject] = useState(projectsSeed[0]);
   const [amMali] = useState("2026/2025");
-  const [searchVal, setSearchVal] = useState("");
+
+  const projectOptions = useMemo(
+    () => projectsSeed.map((project) => ({
+      value: project.code,
+      label: `${project.name} - ${project.code}`,
+      project,
+    })),
+    []
+  );
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -320,9 +336,20 @@ export default function ByanatAlmashro3() {
       </div>
 
       <div className="flex flex-wrap items-end gap-3 border border-gray-200 rounded p-3 bg-base">
-        <div className="w-full md:w-auto md:min-w-[220px]"><Input label="كود المشروع" showLabel={false} value={kodMashro3} readOnly /></div>
         <Input label="العام المالي" type="select" showLabel={false} options={[{ value: amMali, label: amMali }]} />
-        <div className="flex-1 min-w-[260px]"><Input label="البحث" showLabel={false} value={searchVal} onChange={(e) => setSearchVal(e.target.value)} /></div>
+        <div className="flex-1 min-w-[260px]">
+          <AppSelect
+            label="بحث بكود / اسم المشروع"
+            isCreatable={false}
+            options={projectOptions}
+            value={projectOptions.find((option) => option.value === selectedProject.code) || null}
+            onChange={(option) => {
+              if (option?.project) {
+                setSelectedProject(option.project);
+              }
+            }}
+          />
+        </div>
       </div>
 
       <div className="flex gap-4 border-b border-gray-200 pb-1">
